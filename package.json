@@ -1,0 +1,42 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "ts-node src/db/migrate.ts",
+    "test:setup": "ts-node src/scripts/testSetup.ts",
+    "test:connection": "ts-node src/scripts/testConnection.ts",
+    "test:generate": "ts-node src/scripts/testGeneration.ts",
+    "test:clean": "ts-node src/scripts/cleanTestData.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.53.0",
+    "@clerk/express": "^1.6.0",
+    "@langchain/openai": "^0.5.12",
+    "@langchain/textsplitters": "^0.1.0",
+    "@neondatabase/serverless": "^1.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "drizzle-kit": "^0.31.1",
+    "drizzle-orm": "^0.44.2",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "langchain": "^0.3.27"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.18",
+    "@types/express": "^5.0.2",
+    "@types/node": "^22.15.29",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}

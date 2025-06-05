@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cotización de Proyecto - {{COMPANY_NAME}}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --dark-bg: #151830;
+            --primary-color: #6045FF;
+            --secondary-color: #05C876;
+            --text-color: #FFFFFF;
+            --text-secondary: #a0a0c0;
+            --card-bg: #1E2142;
+            --accent-light: rgba(96, 69, 255, 0.1);
+            --secondary-light: rgba(5, 200, 118, 0.1);
+            --border-color: #343867;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-color);
+            background-color: var(--dark-bg);
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        
+        @media (min-width: 768px) {
+            body {
+                padding: 40px;
+                max-width: 800px;
+            }
+        }
+        
+        .header {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        @media (min-width: 768px) {
+            .header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 40px;
+            }
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+        
+        .logo span {
+            color: var(--primary-color);
+        }
+        
+        .document-title {
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+        
+        .meta-info {
+            margin-top: 5px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .meta-item {
+            margin-bottom: 8px;
+        }
+        
+        .meta-item span:first-child {
+            display: inline-block;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .meta-item span.label {
+            font-weight: 500;
+            color: var(--text-color);
+            margin-right: 5px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+        
+        @media (min-width: 768px) {
+            .section {
+                margin-bottom: 40px;
+                padding: 25px;
+            }
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            color: var(--text-color);
+        }
+        
+        @media (min-width: 768px) {
+            .section-title {
+                font-size: 20px;
+            }
+        }
+        
+        .section-title .emoji {
+            background-color: var(--accent-light);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        @media (min-width: 768px) {
+            .section-title .emoji {
+                width: 36px;
+                height: 36px;
+                font-size: 20px;
+            }
+        }
+        
+        .section-content {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+        
+        @media (min-width: 768px) {
+            .section-content {
+                font-size: 16px;
+            }
+        }
+        
+        .problem-list {
+            list-style: none;
+        }
+        
+        .problem-item {
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 40px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .problem-item .number {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 28px;
+            height: 28px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            font-size: 14px;
+            text-align: center;
+            line-height: 28px;
+            font-weight: 500;
+        }
+        
+        .features-list {
+            list-style: none;
+        }
+        
+        .feature-item {
+            margin-bottom: 12px;
+            position: relative;
+            padding-left: 32px;
+        }
+        
+        .feature-item:before {
+            content: "✅";
+            position: absolute;
+            left: 0;
+            top: 2px;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        .timeline, .pricing {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            color: var(--text-color);
+            min-width: 300px;
+        }
+        
+        .timeline th, .timeline td,
+        .pricing th, .pricing td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        @media (min-width: 768px) {
+            .timeline th, .timeline td,
+            .pricing th, .pricing td {
+                padding: 12px;
+            }
+        }
+        
+        .timeline th {
+            font-weight: 500;
+            background-color: rgba(96, 69, 255, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .pricing th {
+            font-weight: 500;
+            background-color: rgba(5, 200, 118, 0.1);
+            color: var(--secondary-color);
+        }
+        
+        .timeline tr:last-child td,
+        .pricing tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .pricing td:last-child {
+            text-align: right;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+        
+        .warning {
+            background-color: rgba(255, 193, 7, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 14px;
+            margin-top: 20px;
+            color: #FFC107;
+        }
+        
+        .warning-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .warning-title:before {
+            content: "⚠️";
+            margin-right: 8px;
+        }
+        
+        .warning ul {
+            list-style-type: none;
+            margin-top: 10px;
+        }
+        
+        .warning li {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 18px;
+        }
+        
+        .warning li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #FFC107;
+            font-size: 18px;
+            line-height: 1;
+        }
+        
+        .contact {
+            display: flex;
+            flex-direction: column;
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+        }
+        
+        @media (min-width: 768px) {
+            .contact {
+                flex-direction: row;
+                justify-content: space-between;
+                flex-wrap: wrap;
+            }
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            width: 100%;
+        }
+        
+        @media (min-width: 768px) {
+            .contact-item {
+                width: auto;
+                margin-right: 20px;
+            }
+        }
+        
+        .contact-item .emoji {
+            margin-right: 10px;
+            background-color: var(--accent-light);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        
+        .contact-item span:last-child {
+            word-break: break-word;
+        }
+        
+        .message {
+            background: linear-gradient(135deg, var(--card-bg), var(--dark-bg));
+            padding: 25px 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 500;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @media (min-width: 768px) {
+            .message {
+                padding: 30px;
+            }
+        }
+        
+        .message::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+        
+        .message p {
+            margin-bottom: 12px;
+        }
+        
+        .message p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .highlight {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .highlight-primary {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .tag {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 12px;
+            font-weight: 500;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .stats-box {
+            position: relative;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            width: 100%;
+        }
+        
+        @media (min-width: 768px) {
+            .stats-box {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                width: auto;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+        }
+        
+        .stats-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+        
+        .stats-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        /* Estilos para la sección de proyecto */
+        .project-section {
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @media (min-width: 768px) {
+            .project-section {
+                margin-bottom: 40px;
+            }
+        }
+        
+        .project-container {
+            background: linear-gradient(135deg, rgba(96, 69, 255, 0.1), rgba(5, 200, 118, 0.1));
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+        
+        @media (min-width: 768px) {
+            .project-container {
+                padding: 30px;
+            }
+        }
+        
+        .project-name {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--text-color);
+            display: inline-block;
+            position: relative;
+            word-wrap: break-word;
+        }
+        
+        @media (min-width: 768px) {
+            .project-name {
+                font-size: 28px;
+            }
+        }
+        
+        .project-name::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -5px;
+            width: 40%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 3px;
+        }
+        
+        .project-description {
+            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.7;
+            margin-top: 15px;
+        }
+        
+        @media (min-width: 768px) {
+            .project-description {
+                font-size: 16px;
+            }
+        }
+        
+        .roi-box {
+            background-color: var(--accent-light);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .roi-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .roi-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+        
+        .block-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin: 20px 0 10px 0;
+            font-size: 17px;
+        }
+        
+        .whatsapp-box {
+            background-color: rgba(37, 211, 102, 0.1); /* Color de WhatsApp */
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border: 1px solid rgba(37, 211, 102, 0.3);
+            display: flex;
+            align-items: center;
+        }
+        
+        .whatsapp-box i {
+            color: #25D366;
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        .process-box {
+            display: flex;
+            flex-direction: column;
+            background-color: rgba(96, 69, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid rgba(96, 69, 255, 0.2);
+        }
+        
+        .process-step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+        
+        .process-step:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .step-number {
+            background-color: var(--primary-color);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .step-content {
+            flex-grow: 1;
+        }
+        
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <div class="logo">i<span>r</span>relevant<span>.</span></div>
+            <div class="document-title">{{PROPOSAL_TYPE}}</div>
+            <div class="tag">🚀 {{COMPANY_TAGLINE}}</div>
+        </div>
+        <div class="meta-info">
+            <div class="meta-item">
+                <span>📅</span>
+                <span class="label">Fecha de emisión:</span>
+                <span id="current-date">{{PROPOSAL_DATE}}</span>
+            </div>
+            <div class="meta-item">
+                <span>💼</span>
+                <span class="label">Cliente:</span>
+                <span id="client-name">{{CLIENT_COMPANY_NAME}}</span>
+            </div>
+            <div class="meta-item">
+                <span>🏢</span>
+                <span class="label">NIT:</span>
+                <span>{{CLIENT_NIT}}</span>
+            </div>
+            <div class="meta-item">
+                <span>👨‍💻</span>
+                <span class="label">Consultor a cargo:</span>
+                <span>{{CONSULTANT_NAME}}</span>
+            </div>
+            <div class="meta-item">
+                <span>📆</span>
+                <span class="label">Validez:</span>
+                <span>{{PROPOSAL_VALIDITY}}</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Nueva sección para el nombre del proyecto y descripción -->
+    <div class="project-section">
+        <div class="project-container">
+            <h1 class="project-name" id="project-name">{{PROJECT_NAME}}</h1>
+            <p class="project-description" id="project-description">
+                {{PROJECT_DESCRIPTION}}
+            </p>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">
+            <span class="emoji">🤖</span>
+            <span>¿Por qué irrelevant?</span>
+        </div>
+        <div class="section-content">
+            <p><strong class="highlight">¿Te cansaste de las excusas y de escuchar "así se ha hecho siempre"?</strong> En un mundo que avanza a la velocidad de la luz, quedarse quieto no es opción. Creemos que la tecnología es tu mejor arma para romper barreras y competir en la liga de los grandes.</p> 
+            <p>En <strong class="highlight">irrelevant</strong>, convertimos esos procesos tediosos y repetitivos en automatizaciones brillantes, casi como un superpoder, liberando tu tiempo (y el de tu equipo) para lo realmente importante: escalar tu negocio, conquistar mercados y dejar huella.</p>
+            <p>Nuestra misión es clara: darte soluciones inteligentes y despejarte el camino hacia tu próxima gran victoria. ¿Listo para el siguiente nivel o prefieres quedarte donde estás?</p>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">
+            <span class="emoji">🎯</span>
+            <span>Sabemos que esto es lo que te duele</span>
+        </div>
+        <div class="section-content">
+            <ul class="problem-list">
+                <li class="problem-item">
+                    <span class="number">1</span>
+                    <span id="problem-1">{{PROBLEM_1}}</span>
+                </li>
+                <li class="problem-item">
+                    <span class="number">2</span>
+                    <span id="problem-2">{{PROBLEM_2}}</span>
+                </li>
+                <li class="problem-item">
+                    <span class="number">3</span>
+                    <span id="problem-3">{{PROBLEM_3}}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">
+            <span class="emoji">🖥️</span>
+            <span>Nuestra Solución: {{SOLUTION_NAME}}</span>
+        </div>
+        <div class="section-content">
+            <p>{{SOLUTION_DESCRIPTION}}</p>
+            
+            <div class="process-box">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-title">{{STEP_1_TITLE}}</div>
+                        <p>{{STEP_1_DESCRIPTION}}</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-title">{{STEP_2_TITLE}}</div>
+                        <p>{{STEP_2_DESCRIPTION}}</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-title">{{STEP_3_TITLE}}</div>
+                        <p>{{STEP_3_DESCRIPTION}}</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <div class="step-title">{{STEP_4_TITLE}}</div>
+                        <p>{{STEP_4_DESCRIPTION}}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <p style="margin-top: 20px;">{{SOLUTION_BENEFIT_SUMMARY}}</p>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">
+            <span class="emoji">💡</span>
+            <span>¿Qué incluye este desarrollo?</span>
+        </div>
+        <div class="section-content">
+            <ul class="features-list">
+                <li class="feature-item">{{FEATURE_1}}</li>
+                <li class="feature-item">{{FEATURE_2}}</li>
+                <li class="feature-item">{{FEATURE_3}}</li>
+                <li class="feature-item">{{FEATURE_4}}</li>
+                <li class="feature-item">{{FEATURE_5}}</li>
+                <li class="feature-item">{{FEATURE_6}}</li>
+            </ul>
+            
+            <div style="background-color: rgba(5, 200, 118, 0.1); border-radius: 8px; padding: 20px; margin-top: 20px; border: 1px solid rgba(5, 200, 118, 0.3);">
+                <p style="font-weight: 600; color: var(--secondary-color); margin-bottom: 10px;">El costo de implementación incluye:</p>
+                <ul class="features-list">
+                    <li class="feature-item">{{IMPLEMENTATION_FEATURE_1}}</li>
+                    <li class="feature-item">{{IMPLEMENTATION_FEATURE_2}}</li>
+                    <li class="feature-item">{{IMPLEMENTATION_FEATURE_3}}</li>
+                    <li class="feature-item">{{IMPLEMENTATION_FEATURE_4}}</li>
+                    <li class="feature-item">{{IMPLEMENTATION_FEATURE_5}}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">
+            <span class="emoji">📦</span>
+            <span>Proceso de Implementación y Tiempos</span>
+        </div>
+        <div class="section-content">
+            <div class="table-responsive">
+                <table class="timeline">
+                    <thead>
+                        <tr>
+                            <th>Fase</th>
+                            <th>Descripción</th>
+                            <th>Tiempo Estimado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{PHASE_1_NAME}}</td>
+                            <td>{{PHASE_1_DESCRIPTION}}</td>
+                            <td>{{PHASE_1_TIME}}</td>
+                        </tr>
+                        <tr>
+                            <td>{{PHASE_2_NAME}}</td>
+                            <td>{{PHASE_2_DESCRIPTION}}</td>
+                            <td>{{PHASE_2_TIME}}</td>
+                        </tr>
+                        <tr>
+                            <td>{{PHASE_3_NAME}}</td>
+                            <td>{{PHASE_3_DESCRIPTION}}</td>
+                            <td>{{PHASE_3_TIME}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p style="margin-top: 15px; font-weight: 600; color: var(--primary-color);">Tiempo total de entrega: {{TOTAL_DELIVERY_TIME}}</p>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">
+            <span class="emoji">💰</span>
+            <span>Inversión Total</span>
+        </div>
+        <div class="section-content">
+            <div class="table-responsive">
+                <table class="pricing">
+                    <thead>
+                        <tr>
+                            <th>Concepto</th>
+                            <th>Detalle</th>
+                            <th>Precio (COP)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{PRICING_CONCEPT_1}}</td>
+                            <td>{{PRICING_DETAIL_1}}</td>
+                            <td>{{PRICING_AMOUNT_1}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><strong>TOTAL Inversión única (+ IVA)</strong></td>
+                            <td>{{TOTAL_INVESTMENT}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><strong>Fee mensual de mantenimiento (+ IVA)</strong></td>
+                            <td>{{MONTHLY_FEE}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="warning">
+                <div class="warning-title">Plan de pagos:</div>
+                <ul>
+                    <li>{{PAYMENT_PLAN_1}}</li>
+                    <li>{{PAYMENT_PLAN_2}}</li>
+                    <li>{{PAYMENT_PLAN_3}}</li>
+                    <li>{{PAYMENT_PLAN_4}}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">
+            <span class="emoji">📊</span>
+            <span>Ahorro en Tiempo y Dinero</span>
+        </div>
+        <div class="section-content">
+            <p>Con nuestra solución, {{CLIENT_COMPANY_NAME}} podrá:</p>
+            <ul class="features-list">
+                <li class="feature-item">{{SAVINGS_BENEFIT_1}}</li>
+                <li class="feature-item">{{SAVINGS_BENEFIT_2}}</li>
+                <li class="feature-item">{{SAVINGS_BENEFIT_3}}</li>
+                <li class="feature-item">{{SAVINGS_BENEFIT_4}}</li>
+            </ul>
+            
+            <p style="margin-top: 20px; font-weight: 600; color: var(--secondary-color);">{{MONTHLY_SAVINGS_DESCRIPTION}}</p>
+            
+            <div style="background: linear-gradient(135deg, rgba(96, 69, 255, 0.15), rgba(5, 200, 118, 0.15)); 
+                        border-radius: 12px; 
+                        padding: 25px; 
+                        margin-top: 30px; 
+                        text-align: center;
+                        border: 1px solid var(--border-color);
+                        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);">
+                <div style="font-size: 20px; font-weight: 700; margin-bottom: 15px; color: var(--primary-color);">
+                    💰 RETORNO DE INVERSIÓN 💰
+                </div>
+                <p style="margin-bottom: 15px;">Con un ahorro mensual estimado de <strong>{{MONTHLY_SAVINGS_AMOUNT}}</strong>,<br> la inversión se recupera en:</p>
+                <div style="font-size: 36px; font-weight: 800; color: var(--secondary-color); 
+                           background-color: var(--card-bg); 
+                           display: inline-block; 
+                           padding: 15px 40px; 
+                           border-radius: 50px;
+                           margin: 10px 0;
+                           border: 1px solid var(--secondary-color);">
+                    {{ROI_TIME}}
+                </div>
+                <p style="margin-top: 15px; font-size: 14px;">{{ROI_DESCRIPTION}}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">
+            <span class="emoji">🔒</span>
+            <span>Garantía y Seguridad</span>
+        </div>
+        <div class="section-content">
+            <p>Antes de iniciar cualquier desarrollo, firmamos un acuerdo de confidencialidad (NDA) para garantizar la protección de la información y procesos internos de su empresa. Nuestra prioridad es que usted se sienta seguro en todo momento.</p>
+        </div>
+    </div>
+    
+   <div class="section">
+        <div class="section-title">
+            <span class="emoji">🎓</span>
+            <span>Beneficio Educativo Incluido</span>
+        </div>
+        <div class="section-content">
+            <ul class="features-list">
+                <li class="feature-item">Una sesión de formación personalizada (1 hora) para aprender a usar la herramienta y aprovechar otras tecnologías prácticas</li>
+                <li class="feature-item">Acceso exclusivo al repositorio de herramientas recomendadas por nuestro equipo para mejorar la productividad del equipo</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">
+            <span class="emoji">📞</span>
+            <span>Dudas o arrancamos de una</span>
+        </div>
+        <div class="contact">
+            <div class="contact-item">
+                <span class="emoji">📧</span>
+                <span>ahoyosh@stayirrelevant.com</span>
+            </div>
+            <div class="contact-item">
+                <span class="emoji">📲</span>
+                <span>+57(318)-384-9532</span>
+            </div>
+            <div class="contact-item">
+                <span class="emoji">🌐</span>
+                <span>stayirrelevant.com</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="message">
+         <p>El proceso perfecto no existe. Pero sí existe el <span class="highlight">flow automático perfecto</span>para tu negocio. Con <span class="highlight-primary">irrelevant</span>, el sistema trabaja por ti, y tú te dedicas a lo que realmente importa: crecer.</p>
+    </div>
+    
+    <script>
+        // La fecha ya está fijada en "{{PROPOSAL_DATE}}"
+        // Si quieres que sea dinámico, descomenta la siguiente línea:
+        // const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        // document.getElementById('current-date').textContent = new Date().toLocaleDateString('es-ES', options);
+    </script>
+</body>
+</html>
