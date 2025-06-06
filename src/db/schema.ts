@@ -15,8 +15,9 @@ export const templates = pgTable('templates', {
   organizationId: uuid('organization_id').references(() => organizations.id).notNull(),
   name: text('name').notNull(),
   htmlContent: text('html_content').notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull()
+  // Removemos description y updatedAt por ahora ya que no existen en la BD
+  createdAt: timestamp('created_at').defaultNow().notNull()
+  // updatedAt: timestamp('updated_at').defaultNow().notNull() // Comentado por ahora
 });
 
 export const quotations = pgTable('quotations', {
