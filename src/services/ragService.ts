@@ -1,6 +1,19 @@
 // src/services/ragService.ts
 import { Anthropic } from '@anthropic-ai/sdk';
 
+interface ExtractedProjectInfo {
+  projectSummary: string;
+  services: string[];
+  pricing: {
+    implementationFee?: number | null; // ✅ Permitir null
+    monthlyFee?: number | null; // ✅ Permitir null
+    totalAmount?: number | null; // ✅ Permitir null
+    description?: string;
+  };
+  timeline?: string;
+  benefits: string[];
+}
+
 export class RAGService {
  private anthropic: Anthropic;
 
@@ -23,20 +36,28 @@ export class RAGService {
      clientPhone?: string;
      clientRutNit?: string;
      projectName: string;
-     projectDescription: string;
+     projectDescription: string; // Este es el prompt del usuario
    }
  ): Promise<string> {
    
-   console.log('🚀 Iniciando generación con estrategia de reemplazo inteligente...');
+   console.log('🚀 Iniciando generación con extracción de información estructurada...');
 
-   // 1. Extraer todos los placeholders del template
+   // 1. Extraer información estructurada del prompt del usuario
+   const extractedInfo = await this.extractProjectInformation(clientData.projectDescription);
+   console.log('📊 Información extraída:', extractedInfo);
+
+   // 2. Extraer placeholders del template
    const placeholders = this.extractPlaceholders(fullTemplate);
    console.log('📝 Placeholders encontrados:', placeholders.length);
 
-   // 2. Generar contenido para cada placeholder usando Claude
-   const placeholderContent = await this.generatePlaceholderContent(placeholders, clientData);
+   // 3. Generar contenido usando la información extraída
+   const placeholderContent = await this.generatePlaceholderContentWithExtractedInfo(
+     placeholders, 
+     clientData, 
+     extractedInfo
+   );
 
-   // 3. Reemplazar placeholders en el template
+   // 4. Reemplazar placeholders en el template
    let finalHtml = fullTemplate;
    let replacedCount = 0;
    
@@ -55,7 +76,7 @@ export class RAGService {
 
    console.log(`✅ Reemplazados ${replacedCount} placeholders de ${placeholders.length} encontrados`);
    
-   // 4. Verificar si quedan placeholders sin reemplazar
+   // 5. Verificar si quedan placeholders sin reemplazar
    const remainingPlaceholders = finalHtml.match(/\{\{[^}]+\}\}/g);
    if (remainingPlaceholders) {
      console.log('⚠️ Placeholders sin reemplazar:', remainingPlaceholders.slice(0, 5));
@@ -63,7 +84,7 @@ export class RAGService {
      // Reemplazar placeholders restantes con valores genéricos
      for (const remaining of remainingPlaceholders) {
        const placeholderName = remaining.replace(/[{}]/g, '');
-       const genericValue = this.generateGenericValue(placeholderName, clientData);
+       const genericValue = this.generateGenericValue(placeholderName, clientData, extractedInfo);
        finalHtml = finalHtml.replace(new RegExp(`\\{\\{${placeholderName}\\}\\}`, 'g'), genericValue);
        console.log(`   🔧 ${placeholderName}: Reemplazado con valor genérico`);
      }
@@ -73,30 +94,108 @@ export class RAGService {
    return finalHtml;
  }
 
- private extractPlaceholders(template: string): string[] {
-   const matches = template.match(/\{\{([^}]+)\}\}/g);
-   if (!matches) return [];
-   
-   const uniquePlaceholders = [...new Set(matches.map(match => match.replace(/[{}]/g, '')))];
-   return uniquePlaceholders;
+ private async extractProjectInformation(projectPrompt: string): Promise<ExtractedProjectInfo> {
+   console.log('🔍 Extrayendo información estructurada del prompt...');
+
+   const extractionPrompt = `
+Analiza el siguiente prompt de proyecto y extrae información estructurada:
+
+PROMPT DEL PROYECTO:
+"${projectPrompt}"
+
+Extrae y estructura la siguiente información:
+
+1. RESUMEN DEL PROYECTO: Un resumen profesional de 2-3 líneas de lo que se va a entregar
+2. SERVICIOS: Lista de servicios/funcionalidades principales mencionados
+3. PRECIOS: Cualquier mención de costos, fees, precios (busca números + COP, pesos, USD, etc.)
+4. TIMELINE: Cualquier mención de tiempos de entrega o implementación
+5. BENEFICIOS: Beneficios o valor agregado mencionados
+
+FORMATO DE RESPUESTA - SOLO JSON VÁLIDO:
+{
+  "projectSummary": "Resumen profesional del proyecto en 2-3 líneas",
+  "services": ["Servicio 1", "Servicio 2", "etc"],
+  "pricing": {
+    "implementationFee": número_o_null,
+    "monthlyFee": número_o_null,
+    "totalAmount": número_o_null,
+    "description": "descripción de la estructura de precios"
+  },
+  "timeline": "tiempo estimado o null",
+  "benefits": ["Beneficio 1", "Beneficio 2", "etc"]
+}
+
+IMPORTANTE: 
+- Si mencionan precios específicos, úsalos EXACTAMENTE
+- Si dicen "5000.000 COP" = 5000000 (sin puntos como separadores de miles)
+- Si dicen "100.000 COP" = 100000
+- El projectSummary debe ser profesional y comercial, NO el prompt original
+
+Responde únicamente con el JSON válido:`;
+
+   try {
+     const response = await this.anthropic.messages.create({
+       model: 'claude-3-5-sonnet-20241022',
+       max_tokens: 1500,
+       temperature: 0.3,
+       messages: [{ role: 'user', content: extractionPrompt }]
+     });
+
+     const content = response.content[0].type === 'text' ? response.content[0].text : '{}';
+     
+     const jsonMatch = content.trim().match(/\{[\s\S]*\}/);
+     if (!jsonMatch) {
+       console.warn('⚠️ No se pudo extraer información estructurada, usando fallback');
+       return this.createFallbackProjectInfo(projectPrompt);
+     }
+
+     try {
+       const extractedInfo = JSON.parse(jsonMatch[0]);
+       console.log('✅ Información extraída exitosamente');
+       return extractedInfo;
+     } catch (parseError) {
+       console.warn('⚠️ Error parseando información extraída, usando fallback');
+       return this.createFallbackProjectInfo(projectPrompt);
+     }
+
+   } catch (error) {
+     console.error('❌ Error extrayendo información:', error);
+     return this.createFallbackProjectInfo(projectPrompt);
+   }
  }
 
- private async generatePlaceholderContent(
+ private createFallbackProjectInfo(projectPrompt: string): ExtractedProjectInfo {
+   return {
+     projectSummary: `Proyecto personalizado según requerimientos específicos del cliente`,
+     services: ['Desarrollo personalizado', 'Implementación', 'Soporte técnico'],
+     pricing: {
+       implementationFee: null,
+       monthlyFee: null,
+       totalAmount: null,
+       description: 'Precio a definir según alcance'
+     },
+     timeline: '4-6 semanas',
+     benefits: ['Solución personalizada', 'Soporte especializado', 'Implementación completa']
+   };
+ }
+
+ private async generatePlaceholderContentWithExtractedInfo(
    placeholders: string[],
-   clientData: any
+   clientData: any,
+   extractedInfo: ExtractedProjectInfo
  ): Promise<Record<string, string>> {
    
-   console.log('🤖 Generando contenido para placeholders...');
+   console.log('🤖 Generando contenido con información extraída...');
 
-   // Valores por defecto primero
-   const defaultValues = this.getDefaultValues(clientData);
+   // Valores base con la información extraída
+   const baseValues = this.getEnhancedDefaultValues(clientData, extractedInfo);
    
    // Identificar placeholders que necesitan generación dinámica
-   const dynamicPlaceholders = placeholders.filter(p => !defaultValues.hasOwnProperty(p));
+   const dynamicPlaceholders = placeholders.filter(p => !baseValues.hasOwnProperty(p));
    
    if (dynamicPlaceholders.length === 0) {
-     console.log('✅ Solo placeholders básicos encontrados, usando valores por defecto');
-     return defaultValues;
+     console.log('✅ Solo placeholders básicos encontrados');
+     return baseValues;
    }
 
    console.log(`🔄 Procesando ${dynamicPlaceholders.length} placeholders dinámicos...`);
@@ -109,57 +208,91 @@ export class RAGService {
      const batch = dynamicPlaceholders.slice(i, i + batchSize);
      console.log(`   📦 Procesando lote ${Math.floor(i/batchSize) + 1}/${Math.ceil(dynamicPlaceholders.length/batchSize)} (${batch.length} placeholders)...`);
      
-     const batchContent = await this.generateBatchContent(batch, clientData);
+     const batchContent = await this.generateBatchContentWithInfo(batch, clientData, extractedInfo);
      allGeneratedContent = { ...allGeneratedContent, ...batchContent };
    }
    
    // Combinar valores por defecto con contenido generado
-   const finalContent = { ...defaultValues, ...allGeneratedContent };
+   const finalContent = { ...baseValues, ...allGeneratedContent };
    console.log(`✅ Contenido generado para ${Object.keys(finalContent).length} placeholders en total`);
    
    return finalContent;
  }
 
- private async generateBatchContent(
+ private getEnhancedDefaultValues(clientData: any, extractedInfo: ExtractedProjectInfo): Record<string, string> {
+   const currentDate = new Date().toLocaleDateString('es-ES', {
+     year: 'numeric',
+     month: 'long',
+     day: 'numeric'
+   });
+
+   return {
+     'COMPANY_NAME': clientData.clientCompany || clientData.clientName,
+     'CLIENT_COMPANY_NAME': clientData.clientCompany || clientData.clientName,
+     'CLIENT_NIT': clientData.clientRutNit || 'Por definir',
+     'PROJECT_NAME': clientData.projectName,
+     'PROJECT_DESCRIPTION': extractedInfo.projectSummary, // ✅ Usar el resumen generado
+     'SOLUTION_DESCRIPTION': extractedInfo.projectSummary,
+     'PROPOSAL_DATE': currentDate,
+     'PROPOSAL_TYPE': 'Propuesta de Desarrollo Tecnológico',
+     'COMPANY_TAGLINE': 'Automatización que Transforma',
+     'CONSULTANT_NAME': 'Equipo irrelevant',
+     'PROPOSAL_VALIDITY': '30 días calendario',
+     'SOLUTION_NAME': clientData.projectName.split(' ').slice(0, 3).join(' '),
+     
+     // ✅ Precios extraídos del prompt
+     'PRICING_AMOUNT_1': extractedInfo.pricing.implementationFee ? 
+       `$${extractedInfo.pricing.implementationFee.toLocaleString()}` : '$25.000.000',
+     'MONTHLY_FEE': extractedInfo.pricing.monthlyFee ? 
+       `$${extractedInfo.pricing.monthlyFee.toLocaleString()}` : '$1.200.000',
+     'TOTAL_INVESTMENT': extractedInfo.pricing.implementationFee ? 
+       `$${extractedInfo.pricing.implementationFee.toLocaleString()}` : '$25.000.000',
+     'PRICING_CONCEPT_1': extractedInfo.services[0] || 'Desarrollo e Implementación',
+     'PRICING_DETAIL_1': extractedInfo.pricing.description || 'Incluye desarrollo completo e implementación',
+     
+     // Timeline extraído
+     'TOTAL_DELIVERY_TIME': extractedInfo.timeline || '4-6 semanas',
+     'PHASE_1_TIME': '2-3 semanas',
+     'PHASE_2_TIME': '2-3 semanas',
+     'PHASE_3_TIME': '1 semana',
+   };
+ }
+
+ private async generateBatchContentWithInfo(
    placeholderBatch: string[],
-   clientData: any
+   clientData: any,
+   extractedInfo: ExtractedProjectInfo
  ): Promise<Record<string, string>> {
    
    const prompt = `
-Genera contenido específico y profesional para una cotización de proyecto tecnológico.
+Genera contenido específico para una cotización basándote en la información extraída.
 
 DATOS DEL CLIENTE:
 - Nombre: ${clientData.clientName}
 - Empresa: ${clientData.clientCompany}
-- Email: ${clientData.clientEmail}
-- Teléfono: ${clientData.clientPhone || 'No especificado'}
-- RUT/NIT: ${clientData.clientRutNit || 'No especificado'}
 - Proyecto: ${clientData.projectName}
-- Descripción: ${clientData.projectDescription}
 
-CONTEXTO DEL PROYECTO:
-Este es un proyecto de análisis de datos y machine learning para ${clientData.clientCompany}. 
-El proyecto busca automatizar procesos, generar insights y mejorar la toma de decisiones empresariales.
+INFORMACIÓN DEL PROYECTO EXTRAÍDA:
+- Resumen: ${extractedInfo.projectSummary}
+- Servicios: ${extractedInfo.services.join(', ')}
+- Precios: Fee implementación: ${extractedInfo.pricing.implementationFee || 'No especificado'}, Mensual: ${extractedInfo.pricing.monthlyFee || 'No especificado'}
+- Timeline: ${extractedInfo.timeline || 'No especificado'}
+- Beneficios: ${extractedInfo.benefits.join(', ')}
 
 PLACEHOLDERS A COMPLETAR:
 ${placeholderBatch.map(p => `{{${p}}}`).join('\n')}
 
-INSTRUCCIONES ESPECÍFICAS:
-1. Para PROBLEM_X: Identifica problemas reales de análisis de datos que este proyecto resuelve
-2. Para FEATURE_X: Describe funcionalidades específicas de la plataforma de ML
-3. Para STEP_X_TITLE/DESCRIPTION: Etapas del proceso de implementación
-4. Para PHASE_X: Fases del proyecto con nombres y descripciones técnicas
-5. Para precios (PRICING_X, TOTAL_X): Usa rangos entre $15M-$45M COP
-6. Para tiempos: Entre 2-6 meses dependiendo de la fase
-7. Para SAVINGS_X: Beneficios cuantificables del proyecto
-8. Para IMPLEMENTATION_X: Aspectos técnicos incluidos
-9. Mantén coherencia técnica con proyectos de ML y análisis de datos
-10. Usa términos como: ETL, dashboards, algoritmos predictivos, automatización
+INSTRUCCIONES:
+1. USA EXACTAMENTE los precios especificados en la información extraída
+2. Mantén coherencia con los servicios mencionados
+3. Para precios: Si hay fee de implementación, úsalo; si hay mensual, úsalo
+4. Para problemas/features: Basar en los servicios y beneficios extraídos
+5. Mantén el tono profesional y específico al proyecto
 
 FORMATO DE RESPUESTA - SOLO JSON VÁLIDO:
 {
- "PLACEHOLDER_NAME": "contenido específico y técnico",
- "OTRO_PLACEHOLDER": "otro contenido relevante"
+ "PLACEHOLDER_NAME": "contenido específico",
+ "OTRO_PLACEHOLDER": "otro contenido"
 }
 
 Responde únicamente con el JSON válido:`;
@@ -181,7 +314,7 @@ Responde únicamente con el JSON válido:`;
      const jsonMatch = jsonContent.match(/\{[\s\S]*\}/);
      if (!jsonMatch) {
        console.warn(`   ⚠️ No se encontró JSON válido en la respuesta`);
-       return this.generateFallbackBatch(placeholderBatch, clientData);
+       return this.generateFallbackBatch(placeholderBatch, clientData, extractedInfo);
      }
 
      try {
@@ -190,28 +323,69 @@ Responde únicamente con el JSON válido:`;
        return parsedContent;
      } catch (parseError) {
        console.warn(`   ⚠️ Error parseando JSON: ${parseError}`);
-       return this.generateFallbackBatch(placeholderBatch, clientData);
+       return this.generateFallbackBatch(placeholderBatch, clientData, extractedInfo);
      }
 
    } catch (error) {
      console.error(`   ❌ Error generando contenido del lote:`, error);
-     return this.generateFallbackBatch(placeholderBatch, clientData);
+     return this.generateFallbackBatch(placeholderBatch, clientData, extractedInfo);
    }
  }
 
- private generateFallbackBatch(placeholders: string[], clientData: any): Record<string, string> {
+ private generateFallbackBatch(
+   placeholders: string[], 
+   clientData: any, 
+   extractedInfo?: ExtractedProjectInfo
+ ): Record<string, string> {
    const fallback: Record<string, string> = {};
    
    placeholders.forEach(placeholder => {
-     fallback[placeholder] = this.generateGenericValue(placeholder, clientData);
+     fallback[placeholder] = this.generateGenericValue(placeholder, clientData, extractedInfo);
    });
    
    return fallback;
  }
 
- private generateGenericValue(placeholder: string, clientData: any): string {
+ private extractPlaceholders(template: string): string[] {
+   const matches = template.match(/\{\{([^}]+)\}\}/g);
+   if (!matches) return [];
+   
+   const uniquePlaceholders = [...new Set(matches.map(match => match.replace(/[{}]/g, '')))];
+   return uniquePlaceholders;
+ }
+
+ private generateGenericValue(placeholder: string, clientData: any, extractedInfo?: ExtractedProjectInfo): string {
    const ph = placeholder.toUpperCase();
    
+   // Usar precios extraídos si están disponibles
+   if (extractedInfo?.pricing) {
+     if (ph.includes('PRICING_AMOUNT_1') && extractedInfo.pricing.implementationFee) {
+       return `$${extractedInfo.pricing.implementationFee.toLocaleString()}`;
+     }
+     if (ph.includes('MONTHLY_FEE') && extractedInfo.pricing.monthlyFee) {
+       return `$${extractedInfo.pricing.monthlyFee.toLocaleString()}`;
+     }
+     if (ph.includes('TOTAL_INVESTMENT') && extractedInfo.pricing.implementationFee) {
+       return `$${extractedInfo.pricing.implementationFee.toLocaleString()}`;
+     }
+   }
+
+   // Usar servicios extraídos para features
+   if (extractedInfo?.services && ph.includes('FEATURE_')) {
+     const serviceIndex = parseInt(ph.match(/\d+/)?.[0] || '1') - 1;
+     if (extractedInfo.services[serviceIndex]) {
+       return extractedInfo.services[serviceIndex];
+     }
+   }
+
+   // ✅ Corrección para los beneficios - validar que extractedInfo existe
+   if (extractedInfo && extractedInfo.benefits && (ph.includes('BENEFIT_') || ph.includes('SAVINGS_BENEFIT_'))) {
+     const benefitIndex = parseInt(ph.match(/\d+/)?.[0] || '1') - 1;
+     if (extractedInfo.benefits[benefitIndex]) {
+       return extractedInfo.benefits[benefitIndex];
+     }
+   }
+
    // Problemas empresariales
    if (ph.includes('PROBLEM_1')) {
      return 'Procesos manuales de análisis que consumen demasiado tiempo y recursos del equipo';
@@ -276,19 +450,22 @@ Responde únicamente con el JSON válido:`;
      return '2-3 semanas';
    }
    
-   // Precios y costos
+   // Precios y costos (usar extraídos si están disponibles)
    else if (ph.includes('PRICING_CONCEPT_1')) {
-     return 'Desarrollo Plataforma de Análisis ML';
+     return extractedInfo?.services[0] || 'Desarrollo Plataforma de Análisis ML';
    } else if (ph.includes('PRICING_DETAIL_1')) {
-     return 'Incluye pipeline ETL, algoritmos ML, dashboard y API';
+     return extractedInfo?.pricing.description || 'Incluye pipeline ETL, algoritmos ML, dashboard y API';
    } else if (ph.includes('PRICING_AMOUNT_1')) {
-     return '$28.500.000';
+     return extractedInfo?.pricing.implementationFee ? 
+       `$${extractedInfo.pricing.implementationFee.toLocaleString()}` : '$28.500.000';
    } else if (ph.includes('TOTAL_INVESTMENT')) {
-     return '$28.500.000';
+     return extractedInfo?.pricing.implementationFee ? 
+       `$${extractedInfo.pricing.implementationFee.toLocaleString()}` : '$28.500.000';
    } else if (ph.includes('MONTHLY_FEE')) {
-     return '$1.200.000';
+     return extractedInfo?.pricing.monthlyFee ? 
+       `$${extractedInfo.pricing.monthlyFee.toLocaleString()}` : '$1.200.000';
    } else if (ph.includes('TOTAL_DELIVERY_TIME')) {
-     return '13-17 semanas (3-4 meses)';
+     return extractedInfo?.timeline || '13-17 semanas (3-4 meses)';
    }
    
    // Beneficios y ahorros
@@ -336,7 +513,8 @@ Responde únicamente con el JSON válido:`;
    
    // Descripción de solución
    else if (ph.includes('SOLUTION_DESCRIPTION')) {
-     return `Una plataforma integral de análisis de datos que utiliza machine learning para transformar información dispersa en insights accionables. El sistema automatiza la recolección, procesamiento y análisis de datos empresariales, generando predicciones y recomendaciones que impulsan la toma de decisiones estratégicas en ${clientData.clientCompany}.`;
+     return extractedInfo?.projectSummary || 
+       `Una plataforma integral de análisis de datos que utiliza machine learning para transformar información dispersa en insights accionables. El sistema automatiza la recolección, procesamiento y análisis de datos empresariales, generando predicciones y recomendaciones que impulsan la toma de decisiones estratégicas en ${clientData.clientCompany}.`;
    } else if (ph.includes('SOLUTION_BENEFIT_SUMMARY')) {
      return `Con esta solución, ${clientData.clientCompany} tendrá acceso a análisis predictivos avanzados, automatización de reportes y una visión integral de sus datos en tiempo real, reduciendo significativamente los tiempos de análisis manual y mejorando la precisión en la toma de decisiones.`;
    }
@@ -351,28 +529,6 @@ Responde únicamente con el JSON válido:`;
    } else {
      return `Contenido personalizado para ${clientData.clientCompany} - ${placeholder}`;
    }
- }
-
- private getDefaultValues(clientData: any): Record<string, string> {
-   const currentDate = new Date().toLocaleDateString('es-ES', {
-     year: 'numeric',
-     month: 'long',
-     day: 'numeric'
-   });
-
-   return {
-     'COMPANY_NAME': clientData.clientCompany || clientData.clientName,
-     'CLIENT_COMPANY_NAME': clientData.clientCompany || clientData.clientName,
-     'CLIENT_NIT': clientData.clientRutNit || 'Por definir',
-     'PROJECT_NAME': clientData.projectName,
-     'PROJECT_DESCRIPTION': clientData.projectDescription,
-     'PROPOSAL_DATE': currentDate,
-     'PROPOSAL_TYPE': 'Propuesta de Desarrollo Tecnológico',
-     'COMPANY_TAGLINE': 'Automatización que Transforma',
-     'CONSULTANT_NAME': 'Equipo irrelevant',
-     'PROPOSAL_VALIDITY': '30 días calendario',
-     'SOLUTION_NAME': clientData.projectName.split(' ').slice(0, 3).join(' '),
-   };
  }
 
  async generateQuotationFallback(
@@ -402,5 +558,27 @@ Responde únicamente con el JSON válido:`;
    
    console.log(`✅ Fallback completado: ${placeholders.length} placeholders procesados`);
    return result;
+ }
+
+ private getDefaultValues(clientData: any): Record<string, string> {
+   const currentDate = new Date().toLocaleDateString('es-ES', {
+     year: 'numeric',
+     month: 'long',
+     day: 'numeric'
+   });
+
+   return {
+     'COMPANY_NAME': clientData.clientCompany || clientData.clientName,
+     'CLIENT_COMPANY_NAME': clientData.clientCompany || clientData.clientName,
+     'CLIENT_NIT': clientData.clientRutNit || 'Por definir',
+     'PROJECT_NAME': clientData.projectName,
+     'PROJECT_DESCRIPTION': clientData.projectDescription,
+     'PROPOSAL_DATE': currentDate,
+     'PROPOSAL_TYPE': 'Propuesta de Desarrollo Tecnológico',
+     'COMPANY_TAGLINE': 'Automatización que Transforma',
+     'CONSULTANT_NAME': 'Equipo irrelevant',
+     'PROPOSAL_VALIDITY': '30 días calendario',
+     'SOLUTION_NAME': clientData.projectName.split(' ').slice(0, 3).join(' '),
+   };
  }
 }

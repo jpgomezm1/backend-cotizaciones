@@ -60,4 +60,8 @@ app.post('/api/test/quotations/generate', (req, res) => {
   quotationController.generateQuotation(req, res);
 });
 
+app.delete('/api/quotations/:id', (req, res) => {
+  quotationController.deleteQuotation(req, res);
+});
+
 export default app;
