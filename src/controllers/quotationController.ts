@@ -74,9 +74,19 @@ export class QuotationController {
 
      console.log(`✅ HTML generado: ${generatedHtml.length} caracteres`);
 
-     // Extraer el resumen del proyecto generado
-     const projectSummary = this.extractProjectSummary(generatedHtml);
-     console.log(`📋 Resumen extraído: ${projectSummary.substring(0, 100)}...`);
+     // ✅ GENERAR RESUMEN CON AI (UNA SOLA VEZ)
+     console.log('🤖 Generando resumen del proyecto con AI...');
+     const aiGeneratedSummary = await this.ragService.generateProjectSummary(
+       generatedHtml,
+       {
+         clientName,
+         clientCompany,
+         clientEmail,
+         projectName
+       }
+     );
+
+     console.log(`📋 Resumen generado por AI: ${aiGeneratedSummary}`);
 
      // Guardar la cotización en la base de datos
      console.log('💾 Guardando cotización en la base de datos...');
@@ -89,7 +99,8 @@ export class QuotationController {
        clientPhone: clientPhone || null,
        clientRutNit: clientRutNit || null,
        projectName,
-       projectDescription: projectSummary, // ✅ Guardar el resumen generado en lugar del prompt
+       projectDescription, // ✅ Mantener el prompt original aquí
+       aiGeneratedSummary, // ✅ Guardar el resumen generado por AI
        generatedHtml,
        status: 'generated'
      }).returning();
@@ -100,7 +111,7 @@ export class QuotationController {
        success: true,
        quotation: {
          ...newQuotation,
-         extractedSummary: projectSummary // ✅ Devolver el resumen extraído
+         aiGeneratedSummary // ✅ Devolver el resumen generado
        },
        generatedHtml,
        message: 'Cotización generada y guardada exitosamente'
@@ -151,7 +162,7 @@ export class QuotationController {
            empresa: quotation.clientCompany || undefined
          },
          proyecto: quotation.projectName,
-         descripcion: quotation.projectDescription, // ✅ Ahora contiene el resumen generado
+         descripcion: quotation.aiGeneratedSummary || quotation.projectDescription, // ✅ Usar resumen de AI prioritariamente
          monto: this.extractPriceFromHtml(quotation.generatedHtml || ''),
          estado: this.mapStatus(quotation.status),
          fechaCreacion: quotation.createdAt.toISOString(),
@@ -211,7 +222,7 @@ export class QuotationController {
 
      console.log(`✅ Cotización encontrada: ${quotation.projectName}`);
 
-     // Transformar al formato del frontend (mismo código que arriba)
+     // Transformar al formato del frontend
      const diasTranscurridos = Math.floor(
        (new Date().getTime() - new Date(quotation.createdAt).getTime()) / (1000 * 3600 * 24)
      );
@@ -230,7 +241,7 @@ export class QuotationController {
          empresa: quotation.clientCompany || undefined
        },
        proyecto: quotation.projectName,
-       descripcion: quotation.projectDescription, // ✅ Ahora contiene el resumen generado
+       descripcion: quotation.aiGeneratedSummary || quotation.projectDescription, // ✅ Usar resumen de AI prioritariamente
        monto: this.extractPriceFromHtml(quotation.generatedHtml || ''),
        estado: this.mapStatus(quotation.status),
        fechaCreacion: quotation.createdAt.toISOString(),
@@ -334,61 +345,6 @@ export class QuotationController {
 
    // Devolver el precio más alto encontrado, o 0 si no se encuentra ninguno
    return allPrices.length > 0 ? Math.max(...allPrices) : 0;
- }
-
- private extractProjectSummary(html: string): string {
-   // Intentar extraer el resumen del proyecto del HTML generado
-   const summaryPatterns = [
-     /<p[^>]*class="[^"]*summary[^"]*"[^>]*>(.*?)<\/p>/i,
-     /<div[^>]*class="[^"]*description[^"]*"[^>]*>(.*?)<\/div>/i,
-     /<p[^>]*class="[^"]*project[^"]*description[^"]*"[^>]*>(.*?)<\/p>/i,
-     /<div[^>]*class="[^"]*project[^"]*summary[^"]*"[^>]*>(.*?)<\/div>/i,
-     // Buscar en secciones comunes
-     /<h3[^>]*>(?:Descripción|Resumen|Proyecto)[^<]*<\/h3>\s*<p[^>]*>(.*?)<\/p>/i,
-     /<h2[^>]*>(?:Descripción|Resumen|Proyecto)[^<]*<\/h2>\s*<p[^>]*>(.*?)<\/p>/i,
-     // Buscar el primer párrafo después de títulos específicos
-     /(?:descripción del proyecto|resumen del proyecto|sobre el proyecto)[^<]*<\/[^>]*>\s*<p[^>]*>(.*?)<\/p>/i
-   ];
-
-   for (const pattern of summaryPatterns) {
-     const match = html.match(pattern);
-     if (match && match[1]) {
-       let summary = match[1]
-         .replace(/<[^>]*>/g, '') // Remover tags HTML
-         .replace(/&nbsp;/g, ' ') // Reemplazar &nbsp;
-         .replace(/&amp;/g, '&') // Reemplazar &amp;
-         .replace(/&lt;/g, '<') // Reemplazar &lt;
-         .replace(/&gt;/g, '>') // Reemplazar &gt;
-         .trim();
-
-       // Si el resumen es muy largo, tomar solo las primeras 2-3 oraciones
-       if (summary.length > 300) {
-         const sentences = summary.split(/[.!?]+/).filter(s => s.trim().length > 10);
-         summary = sentences.slice(0, 2).join('. ') + (sentences.length > 2 ? '.' : '');
-       }
-
-       if (summary.length > 50) { // Solo devolver si tiene contenido significativo
-         return summary;
-       }
-     }
-   }
-
-   // Si no se encuentra un resumen específico, buscar el primer párrafo con contenido sustancial
-   const paragraphs = html.match(/<p[^>]*>(.*?)<\/p>/gi);
-   if (paragraphs) {
-     for (const paragraph of paragraphs) {
-       const content = paragraph
-         .replace(/<[^>]*>/g, '')
-         .replace(/&nbsp;/g, ' ')
-         .trim();
-       
-       if (content.length > 100 && !content.toLowerCase().includes('lorem')) {
-         return content.length > 300 ? content.substring(0, 300) + '...' : content;
-       }
-     }
-   }
-   
-   return 'Proyecto personalizado desarrollado según requerimientos específicos del cliente';
  }
 
  private mapStatus(dbStatus: string): "borrador" | "enviada" | "vista" | "aprobada" | "rechazada" {

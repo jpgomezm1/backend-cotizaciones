@@ -1,0 +1,1 @@
+ALTER TABLE "quotations" ADD COLUMN "ai_generated_summary" text;

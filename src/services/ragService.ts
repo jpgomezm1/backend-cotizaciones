@@ -560,6 +560,66 @@ Responde únicamente con el JSON válido:`;
    return result;
  }
 
+async generateProjectSummary(generatedHtml: string, clientData: any): Promise<string> {
+  console.log('🤖 Generando resumen del proyecto con AI...');
+  
+  const prompt = `
+Analiza la siguiente cotización HTML generada y crea un resumen ejecutivo del proyecto.
+
+DATOS DEL CLIENTE:
+- Empresa: ${clientData.clientCompany || clientData.clientName}
+- Proyecto: ${clientData.projectName}
+
+COTIZACIÓN HTML:
+${generatedHtml}
+
+INSTRUCCIONES:
+1. Lee TODO el contenido de la cotización HTML
+2. Identifica los servicios principales que se están ofreciendo
+3. Extrae el alcance del proyecto
+4. Identifica los beneficios clave mencionados
+5. Crea un resumen ejecutivo de 2-3 líneas que describa QUÉ se va a entregar
+
+FORMATO DE RESPUESTA:
+Responde únicamente con el resumen ejecutivo en texto plano, sin formateo HTML, sin comillas, máximo 300 caracteres.
+
+El resumen debe ser profesional y describir específicamente lo que se va a desarrollar/entregar.
+
+Ejemplo: "Desarrollo de plataforma web de gestión de inventarios con dashboard en tiempo real, sistema de alertas automáticas y módulo de reportes avanzados para optimizar la operación logística."
+`;
+
+  try {
+    const response = await this.anthropic.messages.create({
+      model: 'claude-3-5-sonnet-20241022',
+      max_tokens: 200,
+      temperature: 0.3,
+      messages: [{ role: 'user', content: prompt }]
+    });
+
+    const summary = response.content[0].type === 'text' ? response.content[0].text.trim() : '';
+    
+    // Limpiar el resumen de cualquier formateo adicional
+    const cleanSummary = summary
+      .replace(/"/g, '')
+      .replace(/\n/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    // Limitar a 300 caracteres
+    const finalSummary = cleanSummary.length > 300 
+      ? cleanSummary.substring(0, 297) + '...'
+      : cleanSummary;
+
+    console.log(`✅ Resumen generado: "${finalSummary}"`);
+    return finalSummary;
+
+  } catch (error) {
+    console.error('❌ Error generando resumen:', error);
+    // Fallback simple
+    return `Proyecto de desarrollo tecnológico personalizado para ${clientData.clientCompany || clientData.clientName}`;
+  }
+}
+
  private getDefaultValues(clientData: any): Record<string, string> {
    const currentDate = new Date().toLocaleDateString('es-ES', {
      year: 'numeric',

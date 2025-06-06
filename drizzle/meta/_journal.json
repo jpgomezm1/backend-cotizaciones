@@ -8,6 +8,13 @@
       "when": 1749137988445,
       "tag": "0000_quiet_multiple_man",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1749226450512,
+      "tag": "0001_skinny_starfox",
+      "breakpoints": true
     }
   ]
 }

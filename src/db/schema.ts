@@ -29,9 +29,10 @@ export const quotations = pgTable('quotations', {
   clientPhone: text('client_phone'),
   clientRutNit: text('client_rut_nit'),
   projectName: text('project_name').notNull(),
-  projectDescription: text('project_description').notNull(),
+  projectDescription: text('project_description').notNull(), // Este sigue siendo el prompt original
+  aiGeneratedSummary: text('ai_generated_summary'), // ✅ NUEVO CAMPO para el resumen de AI
   generatedHtml: text('generated_html'),
-  status: text('status').default('draft').notNull(), // draft, generated, sent
+  status: text('status').default('draft').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
