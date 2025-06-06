@@ -64,4 +64,12 @@ app.delete('/api/quotations/:id', (req, res) => {
   quotationController.deleteQuotation(req, res);
 });
 
+app.put('/api/templates/:id', (req, res) => {
+  templateController.updateTemplate(req, res);
+});
+
+app.delete('/api/templates/:id', (req, res) => {
+  templateController.deleteTemplate(req, res);
+});
+
 export default app;
