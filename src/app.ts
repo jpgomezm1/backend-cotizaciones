@@ -4,6 +4,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import { QuotationController } from './controllers/quotationController';
 import { TemplateController } from './controllers/templateController';
+import { WorkflowController } from './controllers/workflowController';
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(express.json({ limit: '10mb' }));
 // Instanciar controladores
 const quotationController = new QuotationController();
 const templateController = new TemplateController();
+const workflowController = new WorkflowController();
 
 // Rutas públicas (para desarrollo)
 app.get('/api/health', (req, res) => {
@@ -70,6 +72,27 @@ app.put('/api/templates/:id', (req, res) => {
 
 app.delete('/api/templates/:id', (req, res) => {
   templateController.deleteTemplate(req, res);
+});
+
+// Rutas de workflows (agregar después de las rutas existentes)
+app.get('/api/workflows', (req, res) => {
+  workflowController.listWorkflows(req, res);
+});
+
+app.get('/api/workflows/:id', (req, res) => {
+  workflowController.getWorkflow(req, res);
+});
+
+app.post('/api/workflows', (req, res) => {
+  workflowController.createWorkflow(req, res);
+});
+
+app.put('/api/workflows/:id', (req, res) => {
+  workflowController.updateWorkflow(req, res);
+});
+
+app.delete('/api/workflows/:id', (req, res) => {
+  workflowController.deleteWorkflow(req, res);
 });
 
 export default app;

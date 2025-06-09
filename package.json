@@ -12,7 +12,9 @@
     "test:connection": "ts-node src/scripts/testConnection.ts",
     "test:generate": "ts-node src/scripts/testGeneration.ts",
     "test:clean": "ts-node src/scripts/cleanTestData.ts",
-    "load:template": "tsx src/scripts/loadNewTemplate.ts"
+    "load:template": "tsx src/scripts/loadNewTemplate.ts",
+    "workflows:setup": "tsx src/scripts/testWorkflows.ts",
+    "workflows:process": "tsx src/scripts/processWorkflows.ts"
   },
   "keywords": [],
   "author": "",

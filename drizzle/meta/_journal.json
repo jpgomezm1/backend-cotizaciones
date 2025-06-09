@@ -15,6 +15,13 @@
       "when": 1749226450512,
       "tag": "0001_skinny_starfox",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1749506990566,
+      "tag": "0002_tough_living_tribunal",
+      "breakpoints": true
     }
   ]
 }
