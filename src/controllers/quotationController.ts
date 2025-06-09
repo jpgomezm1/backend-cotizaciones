@@ -53,14 +53,23 @@ export class QuotationController {
 
      console.log(`✅ Template encontrado: ${template.name}`);
 
+     // 🆕 Crear contexto del template
+     const templateContext = {
+       name: template.name,
+       category: this.inferTemplateCategory(template.name, template.htmlContent),
+       description: `Template con ${(template.htmlContent.match(/\{\{[^}]+\}\}/g) || []).length} placeholders`
+     };
+
+     console.log('📊 Contexto del template:', templateContext);
+
      // Procesar template con RAG
      console.log('📊 Procesando template...');
      const templateVectorStore = await this.ragService.processTemplate(template.htmlContent);
 
-     // Generar cotización personalizada
-     console.log('🤖 Generando cotización con IA...');
+     // Generar cotización personalizada con nuevo sistema
+     console.log('🤖 Generando cotización con IA (sistema genérico)...');
      const generatedHtml = await this.ragService.generateQuotation(
-       templateVectorStore,
+       template.htmlContent, // 🆕 Pasar template completo
        {
          clientName,
          clientCompany,
@@ -69,7 +78,8 @@ export class QuotationController {
          clientRutNit,
          projectName,
          projectDescription
-       }
+       },
+       templateContext // 🆕 Nuevo parámetro de contexto
      );
 
      console.log(`✅ HTML generado: ${generatedHtml.length} caracteres`);
@@ -317,6 +327,21 @@ export class QuotationController {
        details: process.env.NODE_ENV === 'development' ? String(error) : undefined
      });
    }
+ }
+
+ // 🆕 Nuevo método para inferir categoría del template
+ private inferTemplateCategory(name: string, content: string): string {
+   const nameUpper = name.toUpperCase();
+   const contentLower = content.toLowerCase();
+   
+   if (nameUpper.includes('MATRIMONIO') || nameUpper.includes('WEDDING') || contentLower.includes('wedding') || contentLower.includes('matrimonio')) return 'eventos';
+   if (nameUpper.includes('WEB') || nameUpper.includes('APP') || nameUpper.includes('DESARROLLO')) return 'desarrollo';
+   if (nameUpper.includes('MARKETING') || contentLower.includes('marketing')) return 'marketing';
+   if (nameUpper.includes('CONSULTOR') || contentLower.includes('consultoria')) return 'consultoria';
+   if (nameUpper.includes('DISEÑO') || nameUpper.includes('DISENO')) return 'diseno';
+   if (nameUpper.includes('SERVICIO')) return 'servicios';
+   
+   return 'general';
  }
 
  // Helper methods

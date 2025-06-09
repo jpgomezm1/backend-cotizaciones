@@ -1,0 +1,2025 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cotización de Matrimonio - Selecta Eventos</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            /* Colores originales de Selecta Eventos */
+            --primary-green: #8BC34A;
+            --secondary-green: #4CAF50;
+            --accent-teal: #009688;
+            --elegant-gold: #D4AF37;
+            --text-dark: #2E2E2E;
+            --text-light: #666666;
+            --bg-cream: #FEFEF8;
+            --card-bg: #FFFFFF;
+            --border-light: #E8E8E8;
+            --shadow: rgba(0, 0, 0, 0.08);
+            
+            /* Gradientes con colores de marca */
+            --primary-gradient: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+            --accent-gradient: linear-gradient(135deg, var(--accent-teal), var(--secondary-green));
+            --gold-gradient: linear-gradient(135deg, var(--elegant-gold), #B8860B);
+            --green-glow: rgba(139, 195, 74, 0.3);
+            --teal-glow: rgba(0, 150, 136, 0.3);
+            
+            /* Sombras mejoradas */
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.04);
+            --shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.15);
+            
+            /* Border radius */
+            --border-radius-sm: 0.375rem;
+            --border-radius-md: 0.5rem;
+            --border-radius-lg: 0.75rem;
+            --border-radius-xl: 1rem;
+            --border-radius-2xl: 1.5rem;
+            --border-radius-3xl: 2rem;
+            
+            /* Transiciones */
+            --transition-fast: all 0.15s ease;
+            --transition-normal: all 0.3s ease;
+            --transition-slow: all 0.5s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-teal) 100%);
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: var(--border-radius-3xl);
+            box-shadow: var(--shadow-2xl);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+            z-index: 10;
+        }
+        
+        /* Header Section */
+        .header {
+            background: linear-gradient(135deg, var(--card-bg) 0%, var(--bg-cream) 100%);
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            border-bottom: 1px solid var(--border-light);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, var(--green-glow) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (min-width: 768px) {
+            .header {
+                grid-template-columns: 2fr 1fr;
+                padding: 3rem;
+            }
+        }
+        
+        .brand-section {
+            position: relative;
+            z-index: 5;
+        }
+        
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            color: var(--accent-teal);
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+            position: relative;
+        }
+        
+        .logo::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--primary-gradient);
+            border-radius: 3px;
+        }
+        
+        .logo-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            font-weight: 400;
+            font-style: italic;
+            margin-bottom: 1.5rem;
+        }
+        
+        .document-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+        
+        .tagline {
+            display: inline-flex;
+            align-items: center;
+            background: var(--primary-gradient);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius-xl);
+            font-size: 0.875rem;
+            font-weight: 600;
+            box-shadow: 0 2px 10px var(--green-glow);
+            animation: pulse 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 2px 10px var(--green-glow); }
+            50% { transform: scale(1.05); box-shadow: 0 4px 20px var(--green-glow); }
+        }
+        
+        .meta-info {
+            position: relative;
+            z-index: 5;
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: var(--border-radius-xl);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+            transition: var(--transition-fast);
+        }
+        
+        .meta-item:hover {
+            transform: translateX(4px);
+        }
+        
+        .meta-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .meta-icon {
+            width: 2rem;
+            height: 2rem;
+            border-radius: var(--border-radius-md);
+            background: var(--accent-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+            font-size: 1rem;
+            box-shadow: 0 2px 10px var(--teal-glow);
+        }
+        
+        .meta-label {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-right: 0.5rem;
+        }
+        
+        .meta-value {
+            color: var(--text-light);
+        }
+        
+        /* Content Wrapper */
+        .content-wrapper {
+            padding: 2rem;
+            background: var(--bg-cream);
+        }
+        
+        @media (min-width: 768px) {
+            .content-wrapper {
+                padding: 3rem;
+            }
+        }
+        
+        /* Event Header */
+        .event-header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: var(--border-radius-2xl);
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px var(--green-glow);
+        }
+        
+        .event-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
+            animation: float 20s infinite linear;
+        }
+        
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-20px, -20px) rotate(360deg); }
+        }
+        
+        .event-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .event-subtitle {
+            font-size: 1.125rem;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .event-date {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius-xl);
+            font-weight: 600;
+            position: relative;
+            z-index: 2;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Section Styles */
+        .section {
+            margin-bottom: 3rem;
+            background: var(--card-bg);
+            border-radius: var(--border-radius-xl);
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-light);
+            transition: var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent-gradient);
+            opacity: 0;
+            transition: var(--transition-normal);
+        }
+        
+        .section:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .section:hover::before {
+            opacity: 1;
+        }
+        
+        @media (min-width: 768px) {
+            .section {
+                padding: 2.5rem;
+            }
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.25rem, 3vw, 1.75rem);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            color: var(--accent-teal);
+        }
+        
+        .section-icon {
+            width: 3rem;
+            height: 3rem;
+            border-radius: var(--border-radius-lg);
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.5rem;
+            box-shadow: 0 2px 10px var(--green-glow);
+            flex-shrink: 0;
+        }
+        
+        .section-content {
+            color: var(--text-light);
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+        
+        /* Service Grid */
+        .service-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        @media (min-width: 640px) {
+            .service-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .service-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+        }
+        
+        .service-card {
+            background: linear-gradient(135deg, var(--card-bg) 0%, var(--bg-cream) 100%);
+            border: 2px solid var(--border-light);
+            border-radius: var(--border-radius-xl);
+            padding: 2rem;
+            transition: var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+            transform: scaleX(0);
+            transition: var(--transition-normal);
+            transform-origin: left;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 20px 40px var(--shadow);
+            border-color: var(--primary-green);
+        }
+        
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .service-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--accent-teal);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .service-icon {
+            margin-right: 0.75rem;
+            font-size: 1.5rem;
+            width: 2.5rem;
+            height: 2.5rem;
+            background: var(--gold-gradient);
+            border-radius: var(--border-radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .service-description {
+            color: var(--text-light);
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .service-details {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .service-details li {
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-left: 1.5rem;
+            color: var(--text-light);
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+        
+        .service-details li::before {
+            content: "✨";
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: 0.875rem;
+        }
+        
+        .service-price {
+            text-align: right;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--secondary-green);
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-light);
+        }
+        
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            margin: 1.5rem 0;
+        }
+        
+        .pricing-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card-bg);
+            font-size: 0.875rem;
+        }
+        
+        @media (min-width: 768px) {
+            .pricing-table {
+                font-size: 1rem;
+            }
+        }
+        
+        .pricing-table th {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-family: 'Playfair Display', serif;
+            font-size: 0.875rem;
+        }
+        
+        @media (min-width: 768px) {
+            .pricing-table th {
+                padding: 1.25rem;
+                font-size: 1rem;
+            }
+        }
+        
+        .pricing-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-light);
+            transition: var(--transition-fast);
+        }
+        
+        @media (min-width: 768px) {
+            .pricing-table td {
+                padding: 1.25rem;
+            }
+        }
+        
+        .pricing-table tr:hover {
+            background: var(--bg-cream);
+        }
+        
+        .pricing-table td:last-child {
+            text-align: right;
+            font-weight: 600;
+            color: var(--secondary-green);
+        }
+        
+        .total-row {
+            background: linear-gradient(135deg, var(--bg-cream) 0%, var(--card-bg) 100%) !important;
+            font-weight: 700 !important;
+        }
+        
+        .total-row td {
+            color: var(--accent-teal) !important;
+            border-top: 2px solid var(--primary-green) !important;
+            font-size: 1rem !important;
+        }
+        
+        /* Timeline Styles */
+        .timeline-container {
+            background: var(--bg-cream);
+            padding: 2rem;
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--border-light);
+        }
+        
+        .timeline-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            border-left: 4px solid var(--primary-green);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition-normal);
+        }
+        
+        .timeline-item:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-md);
+            border-left-color: var(--accent-teal);
+        }
+        
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .timeline-number {
+            background: var(--primary-gradient);
+            color: white;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 1rem;
+            flex-shrink: 0;
+            box-shadow: 0 2px 10px var(--green-glow);
+        }
+        
+        .timeline-content h4 {
+            color: var(--accent-teal);
+            margin-bottom: 0.5rem;
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+        }
+        
+        .timeline-content p {
+            color: var(--text-light);
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+        
+        /* Highlight Box */
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(139, 195, 74, 0.1) 0%, rgba(76, 175, 80, 0.1) 100%);
+            border: 2px solid var(--primary-green);
+            border-radius: var(--border-radius-xl);
+            padding: 2rem;
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .highlight-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+        
+        .highlight-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--accent-teal);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .highlight-icon {
+            margin-right: 0.75rem;
+            font-size: 1.5rem;
+            width: 2.5rem;
+            height: 2.5rem;
+            background: var(--primary-gradient);
+            border-radius: var(--border-radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        /* Package Grid */
+        .package-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        @media (min-width: 768px) {
+            .package-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        .package-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-light);
+            border-radius: var(--border-radius-xl);
+            padding: 2rem;
+            text-align: center;
+            transition: var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .package-card.featured {
+            border-color: var(--elegant-gold);
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.3);
+        }
+        
+        .package-card.featured::before {
+
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gold-gradient);
+            color: white;
+            padding: 0.375rem 1rem;
+            border-radius: var(--border-radius-xl);
+            font-size: 0.75rem;
+            font-weight: 700;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .package-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-green);
+        }
+        
+        .package-card.featured:hover {
+            transform: scale(1.05) translateY(-8px);
+        }
+        
+        .package-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--accent-teal);
+            margin-bottom: 1rem;
+        }
+        
+        .package-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary-green);
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        @media (min-width: 640px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, var(--card-bg) 0%, var(--bg-cream) 100%);
+            padding: 2rem;
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--border-light);
+            text-align: center;
+            transition: var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent-gradient);
+            transform: scaleX(0);
+            transition: var(--transition-normal);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+            line-height: 1;
+        }
+        
+        .stat-title {
+            color: var(--accent-teal);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .stat-description {
+            color: var(--text-light);
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+        
+        /* Contact Section */
+        .contact-section {
+            background: var(--accent-gradient);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: var(--border-radius-2xl);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin: 3rem 0;
+            box-shadow: 0 20px 40px var(--teal-glow);
+        }
+        
+        .contact-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+        }
+        
+        .contact-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .contact-subtitle {
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            font-size: 1.125rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+            position: relative;
+            z-index: 2;
+        }
+        
+        @media (min-width: 768px) {
+            .contact-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        .contact-item {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: var(--border-radius-lg);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition-normal);
+        }
+        
+        .contact-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .contact-item-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .contact-item-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .contact-item-info {
+            opacity: 0.9;
+            font-size: 0.875rem;
+        }
+        
+        .schedule-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: var(--border-radius-lg);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .schedule-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .schedule-title span {
+           margin-right: 0.5rem;
+       }
+       
+       /* Final Message */
+       .final-message {
+           background: linear-gradient(135deg, var(--card-bg) 0%, var(--bg-cream) 100%);
+           padding: 3rem 2rem;
+           border-radius: var(--border-radius-2xl);
+           text-align: center;
+           border: 2px solid var(--primary-green);
+           position: relative;
+           overflow: hidden;
+           margin: 3rem 0;
+       }
+       
+       .final-message::before {
+           content: '';
+           position: absolute;
+           top: 0;
+           left: 0;
+           right: 0;
+           height: 4px;
+           background: var(--primary-gradient);
+       }
+       
+       .final-tag {
+           display: inline-flex;
+           align-items: center;
+           background: var(--primary-gradient);
+           color: white;
+           padding: 0.75rem 1.5rem;
+           border-radius: var(--border-radius-xl);
+           font-weight: 600;
+           margin-bottom: 1.5rem;
+           box-shadow: 0 2px 10px var(--green-glow);
+       }
+       
+       .final-quote {
+           font-family: 'Playfair Display', serif;
+           font-size: clamp(1rem, 3vw, 1.25rem);
+           color: var(--accent-teal);
+           margin-bottom: 1.5rem;
+           font-style: italic;
+           line-height: 1.6;
+           font-weight: 500;
+       }
+       
+       .final-text {
+           color: var(--text-light);
+           line-height: 1.7;
+           font-size: 1rem;
+       }
+       
+       /* Special Discount Box */
+       .discount-box {
+           background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(139, 195, 74, 0.1) 100%);
+           border-radius: var(--border-radius-lg);
+           padding: 1.5rem;
+           margin-top: 2rem;
+           text-align: center;
+           border: 2px solid var(--elegant-gold);
+           position: relative;
+           overflow: hidden;
+       }
+       
+       .discount-box::before {
+           content: '';
+           position: absolute;
+           top: 0;
+           left: 0;
+           right: 0;
+           height: 3px;
+           background: var(--gold-gradient);
+       }
+       
+       .discount-title {
+           font-weight: 600;
+           color: var(--accent-teal);
+           margin-bottom: 0.75rem;
+           display: flex;
+           align-items: center;
+           justify-content: center;
+       }
+       
+       .discount-title span {
+           margin-right: 0.5rem;
+       }
+       
+       /* Terms Box */
+       .terms-box {
+           background: rgba(255, 193, 7, 0.1);
+           border-radius: var(--border-radius-lg);
+           padding: 1.5rem;
+           border: 1px solid #ffc107;
+           margin: 1.5rem 0;
+       }
+       
+       .terms-title {
+           color: #ff8f00;
+           font-weight: 600;
+           margin-bottom: 1rem;
+           display: flex;
+           align-items: center;
+       }
+       
+       .terms-title span {
+           margin-right: 0.5rem;
+       }
+       
+       .terms-list {
+           list-style: none;
+       }
+       
+       .terms-list li {
+           color: #f57f17;
+           margin-bottom: 0.5rem;
+           position: relative;
+           padding-left: 1.5rem;
+           font-size: 0.875rem;
+           line-height: 1.5;
+       }
+       
+       .terms-list li::before {
+           content: "⚠️";
+           position: absolute;
+           left: 0;
+           top: 0;
+           font-size: 0.875rem;
+       }
+       
+       /* Responsive Design Enhancements */
+       @media (max-width: 640px) {
+           body {
+               padding: 0.5rem;
+           }
+           
+           .content-wrapper {
+               padding: 1.5rem;
+           }
+           
+           .section {
+               padding: 1.5rem;
+               margin-bottom: 2rem;
+           }
+           
+           .service-grid {
+               grid-template-columns: 1fr;
+               gap: 1rem;
+           }
+           
+           .service-card {
+               padding: 1.5rem;
+           }
+           
+           .event-header {
+               padding: 2rem 1.5rem;
+           }
+           
+           .contact-section {
+               padding: 2rem 1.5rem;
+           }
+           
+           .final-message {
+               padding: 2rem 1.5rem;
+           }
+           
+           .pricing-table th,
+           .pricing-table td {
+               padding: 0.75rem 0.5rem;
+               font-size: 0.75rem;
+           }
+           
+           .timeline-item {
+               padding: 1rem;
+           }
+           
+           .timeline-number {
+               width: 2rem;
+               height: 2rem;
+               font-size: 0.875rem;
+           }
+           
+           .meta-icon {
+               width: 1.5rem;
+               height: 1.5rem;
+               font-size: 0.875rem;
+           }
+           
+           .section-icon {
+               width: 2.5rem;
+               height: 2.5rem;
+               font-size: 1.25rem;
+           }
+       }
+       
+       /* Animation Classes */
+       .fade-in {
+           opacity: 0;
+           transform: translateY(20px);
+           animation: fadeIn 0.6s ease forwards;
+       }
+       
+       @keyframes fadeIn {
+           to {
+               opacity: 1;
+               transform: translateY(0);
+           }
+       }
+       
+       .slide-in-left {
+           opacity: 0;
+           transform: translateX(-30px);
+           animation: slideInLeft 0.6s ease forwards;
+       }
+       
+       @keyframes slideInLeft {
+           to {
+               opacity: 1;
+               transform: translateX(0);
+           }
+       }
+       
+       .slide-in-right {
+           opacity: 0;
+           transform: translateX(30px);
+           animation: slideInRight 0.6s ease forwards;
+       }
+       
+       @keyframes slideInRight {
+           to {
+               opacity: 1;
+               transform: translateX(0);
+           }
+       }
+       
+       .scale-in {
+           opacity: 0;
+           transform: scale(0.8);
+           animation: scaleIn 0.6s ease forwards;
+       }
+       
+       @keyframes scaleIn {
+           to {
+               opacity: 1;
+               transform: scale(1);
+           }
+       }
+       
+       /* Scroll behavior */
+       html {
+           scroll-behavior: smooth;
+       }
+       
+       /* Custom scrollbar con colores de marca */
+       ::-webkit-scrollbar {
+           width: 8px;
+       }
+       
+       ::-webkit-scrollbar-track {
+           background: var(--bg-cream);
+       }
+       
+       ::-webkit-scrollbar-thumb {
+           background: var(--primary-gradient);
+           border-radius: 4px;
+       }
+       
+       ::-webkit-scrollbar-thumb:hover {
+           background: var(--accent-gradient);
+       }
+       
+       /* Print styles */
+       @media print {
+           body {
+               background: white;
+               padding: 0;
+           }
+           
+           .container {
+               box-shadow: none;
+               border-radius: 0;
+           }
+           
+           .event-header,
+           .contact-section {
+               background: #f8f9fa !important;
+               color: #333 !important;
+           }
+           
+           .service-card,
+           .section {
+               break-inside: avoid;
+           }
+       }
+       
+       /* Elementos elegantes adicionales */
+       .elegant-text {
+           font-family: 'Playfair Display', serif;
+           font-style: italic;
+           color: var(--accent-teal);
+           font-weight: 500;
+       }
+       
+       /* Mejoras de accesibilidad */
+       .keyboard-navigation *:focus {
+           outline: 2px solid var(--primary-green);
+           outline-offset: 2px;
+       }
+       
+       /* Hover effects mejorados para elementos de la marca */
+       .service-card:hover .service-icon {
+           transform: scale(1.1) rotate(5deg);
+           box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+       }
+       
+       .package-card:hover .package-name {
+           color: var(--primary-green);
+       }
+       
+       .timeline-item:hover .timeline-number {
+           transform: scale(1.1);
+           box-shadow: 0 4px 20px var(--green-glow);
+       }
+       
+       .meta-item:hover .meta-icon {
+           transform: scale(1.1);
+           box-shadow: 0 4px 15px var(--teal-glow);
+       }
+       
+       /* Gradientes de texto para elementos especiales */
+       .gradient-text {
+           background: var(--primary-gradient);
+           -webkit-background-clip: text;
+           -webkit-text-fill-color: transparent;
+           background-clip: text;
+       }
+       
+       /* Botones estilizados con colores de marca */
+       .btn-primary {
+           background: var(--primary-gradient);
+           color: white;
+           padding: 0.75rem 1.5rem;
+           border: none;
+           border-radius: var(--border-radius-lg);
+           font-weight: 600;
+           cursor: pointer;
+           transition: var(--transition-normal);
+           box-shadow: 0 2px 10px var(--green-glow);
+       }
+       
+       .btn-primary:hover {
+           transform: translateY(-2px);
+           box-shadow: 0 4px 20px var(--green-glow);
+       }
+       
+       .btn-secondary {
+           background: var(--accent-gradient);
+           color: white;
+           padding: 0.75rem 1.5rem;
+           border: none;
+           border-radius: var(--border-radius-lg);
+           font-weight: 600;
+           cursor: pointer;
+           transition: var(--transition-normal);
+           box-shadow: 0 2px 10px var(--teal-glow);
+       }
+       
+       .btn-secondary:hover {
+           transform: translateY(-2px);
+           box-shadow: 0 4px 20px var(--teal-glow);
+       }
+   </style>
+</head>
+<body>
+   <div class="container">
+       <div class="header">
+           <div class="brand-section">
+               <div class="logo">Selecta Eventos</div>
+               <div class="logo-subtitle">Donde el anfitrión es otro invitado</div>
+               <div class="document-title">Cotización Matrimonio</div>
+               <div class="tagline">
+                   <span>✨</span>
+                   Donde los sueños se hacen realidad
+               </div>
+           </div>
+           <div class="meta-info">
+               <div class="meta-item">
+                   <div class="meta-icon">📅</div>
+                   <span class="meta-label">Fecha de emisión:</span>
+                   <span class="meta-value">{{FECHA_EMISION}}</span>
+               </div>
+               <div class="meta-item">
+                   <div class="meta-icon">💑</div>
+                   <span class="meta-label">Pareja:</span>
+                   <span class="meta-value">{{NOMBRE_NOVIA}} & {{NOMBRE_NOVIO}}</span>
+               </div>
+               <div class="meta-item">
+                   <div class="meta-icon">👥</div>
+                   <span class="meta-label">Número de invitados:</span>
+                   <span class="meta-value">{{NUMERO_INVITADOS}} personas</span>
+               </div>
+               <div class="meta-item">
+                   <div class="meta-icon">📍</div>
+                   <span class="meta-label">Lugar propuesto:</span>
+                   <span class="meta-value">{{LUGAR_EVENTO}}</span>
+               </div>
+               <div class="meta-item">
+                   <div class="meta-icon">📆</div>
+                   <span class="meta-label">Validez de cotización:</span>
+                   <span class="meta-value">30 días</span>
+               </div>
+           </div>
+       </div>
+       
+       <div class="content-wrapper">
+           <div class="event-header fade-in">
+               <h1 class="event-title">Matrimonio {{NOMBRE_NOVIA}} & {{NOMBRE_NOVIO}}</h1>
+               <p class="event-subtitle">Una celebración elegante para {{NUMERO_INVITADOS}} invitados</p>
+               <div class="event-date">
+                   <span>📅</span>
+                   {{FECHA_EVENTO}}
+               </div>
+           </div>
+           
+           <div class="section slide-in-left">
+               <div class="section-title">
+                   <div class="section-icon">💕</div>
+                   <span>Nuestra Propuesta</span>
+               </div>
+               <div class="section-content">
+                   <p>En <strong class="elegant-text">Selecta Eventos</strong>, entendemos que cada matrimonio es único y especial. Por eso, hemos diseñado una propuesta integral que combina elegancia, sofisticación y atención al detalle para crear el día perfecto que siempre han soñado.</p>
+                   <p style="margin-top: 1rem;">Nuestra experiencia de más de 15 años nos permite ofrecer un servicio completo que abarca desde la decoración más exquisita hasta el más mínimo detalle de protocolo, garantizando que ustedes y sus invitados vivan una experiencia inolvidable.</p>
+               </div>
+           </div>
+           
+           <div class="section slide-in-right">
+               <div class="section-title">
+                   <div class="section-icon">🎨</div>
+                   <span>Servicios Incluidos</span>
+               </div>
+               <div class="section-content">
+                   <div class="service-grid">
+                       <div class="service-card scale-in">
+                           <h3 class="service-name">
+                               <div class="service-icon">{{SERVICIO_1_ICONO}}</div>
+                               {{SERVICIO_1_NOMBRE}}
+                           </h3>
+                           <p class="service-description">{{SERVICIO_1_DESCRIPCION}}</p>
+                           <ul class="service-details">
+                               {{SERVICIO_1_DETALLES}}
+                           </ul>
+                           <div class="service-price">{{SERVICIO_1_PRECIO}}</div>
+                       </div>
+                       
+                       <div class="service-card scale-in">
+                           <h3 class="service-name">
+                               <div class="service-icon">{{SERVICIO_2_ICONO}}</div>
+                               {{SERVICIO_2_NOMBRE}}
+                           </h3>
+                           <p class="service-description">{{SERVICIO_2_DESCRIPCION}}</p>
+                           <ul class="service-details">
+                               {{SERVICIO_2_DETALLES}}
+                           </ul>
+                           <div class="service-price">{{SERVICIO_2_PRECIO}}</div>
+                       </div>
+                       
+                       <div class="service-card scale-in">
+                           <h3 class="service-name">
+                               <div class="service-icon">{{SERVICIO_3_ICONO}}</div>
+                               {{SERVICIO_3_NOMBRE}}
+                           </h3>
+                           <p class="service-description">{{SERVICIO_3_DESCRIPCION}}</p>
+                           <ul class="service-details">
+                               {{SERVICIO_3_DETALLES}}
+                           </ul>
+                           <div class="service-price">{{SERVICIO_3_PRECIO}}</div>
+                       </div>
+                       
+                       <div class="service-card scale-in">
+                           <h3 class="service-name">
+                               <div class="service-icon">{{SERVICIO_4_ICONO}}</div>
+                               {{SERVICIO_4_NOMBRE}}
+                           </h3>
+                           <p class="service-description">{{SERVICIO_4_DESCRIPCION}}</p>
+                           <ul class="service-details">
+                               {{SERVICIO_4_DETALLES}}
+                           </ul>
+                           <div class="service-price">{{SERVICIO_4_PRECIO}}</div>
+                       </div>
+                   </div>
+               </div>
+           </div>
+           
+           <div class="section fade-in">
+               <div class="section-title">
+                   <div class="section-icon">💰</div>
+                   <span>Inversión Detallada</span>
+               </div>
+               <div class="section-content">
+                   <div class="table-container">
+                       <table class="pricing-table">
+                           <thead>
+                               <tr>
+                                   <th>Concepto</th>
+                                   <th>Descripción</th>
+                                   <th>Cantidad</th>
+                                   <th>Valor Unitario</th>
+                                   <th>Subtotal</th>
+                               </tr>
+                           </thead>
+                           <tbody>
+                               {{TABLA_PRECIOS_FILAS}}
+                               <tr class="total-row">
+                                   <td colspan="4"><strong>SUBTOTAL</strong></td>
+                                   <td><strong>{{SUBTOTAL}}</strong></td>
+                               </tr>
+                               <tr class="total-row">
+                                   <td colspan="4"><strong>IVA (19%)</strong></td>
+                                   <td><strong>{{VALOR_IVA}}</strong></td>
+                               </tr>
+                               <tr class="total-row">
+                                   <td colspan="4"><strong>TOTAL INVERSIÓN</strong></td>
+                                   <td><strong>{{TOTAL_INVERSION}}</strong></td>
+                               </tr>
+                           </tbody>
+                       </table>
+                   </div>
+               </div>
+           </div>
+           
+           <div class="section slide-in-left">
+               <div class="section-title">
+                   <div class="section-icon">📋</div>
+                   <span>Cronograma de Planificación</span>
+               </div>
+               <div class="section-content">
+                   <div class="timeline-container">
+                       {{CRONOGRAMA_ITEMS}}
+                   </div>
+               </div>
+           </div>
+           
+           
+           
+           <div class="section slide-in-right">
+               <div class="section-title">
+                   <div class="section-icon">💳</div>
+                   <span>Formas de Pago</span>
+               </div>
+               <div class="section-content">
+                   <div class="package-grid">
+                       <div class="package-card scale-in">
+                           <h3 class="package-name">{{PLAN_1_NOMBRE}}</h3>
+                           <div class="package-price">{{PLAN_1_PORCENTAJES}}</div>
+                           <ul class="service-details">
+                               {{PLAN_1_DETALLES}}
+                           </ul>
+                       </div>
+                       
+                       <div class="package-card featured scale-in">
+                           <h3 class="package-name">{{PLAN_2_NOMBRE}}</h3>
+                           <div class="package-price">{{PLAN_2_PORCENTAJES}}</div>
+                           <ul class="service-details">
+                               {{PLAN_2_DETALLES}}
+                           </ul>
+                       </div>
+                       
+                       <div class="package-card scale-in">
+                           <h3 class="package-name">{{PLAN_3_NOMBRE}}</h3>
+                           <div class="package-price">{{PLAN_3_PORCENTAJES}}</div>
+                           <ul class="service-details">
+                               {{PLAN_3_DETALLES}}
+                           </ul>
+                       </div>
+                   </div>
+                   
+                   
+               </div>
+           </div>
+           
+           <div class="section fade-in">
+               <div class="section-title">
+                   <div class="section-icon">⚠️</div>
+                   <span>Términos y Condiciones</span>
+               </div>
+               <div class="section-content">
+                   <div class="terms-box">
+                       <div class="terms-title">
+                           <span>📋</span>
+                           Información Importante
+                       </div>
+                       <ul class="terms-list">
+                           {{TERMINOS_CONDICIONES}}
+                       </ul>
+                   </div>
+               </div>
+           </div>
+           
+           <div class="section slide-in-left">
+               <div class="section-title">
+                   <div class="section-icon">⭐</div>
+                   <span>¿Por Qué Elegir Selecta Eventos?</span>
+               </div>
+               <div class="section-content">
+                   <div class="stats-grid">
+                       <div class="stat-card scale-in">
+                           <div class="stat-number">15+</div>
+                           <h4 class="stat-title">Años de Experiencia</h4>
+                           <p class="stat-description">Más de 500 matrimonios exitosos</p>
+                       </div>
+                       
+                       <div class="stat-card scale-in">
+                           <div class="stat-number">100%</div>
+                           <h4 class="stat-title">Satisfacción</h4>
+                           <p class="stat-description">Clientes totalmente satisfechos</p>
+                       </div>
+                       
+                       <div class="stat-card scale-in">
+                           <div class="stat-number">24/7</div>
+                           <h4 class="stat-title">Acompañamiento</h4>
+                           <p class="stat-description">Desde el primer día hasta el final</p>
+                       </div>
+                       
+                       <div class="stat-card scale-in">
+                           <div class="stat-number">⭐</div>
+                           <h4 class="stat-title">Calidad Premium</h4>
+                           <p class="stat-description">Proveedores certificados y seleccionados</p>
+                       </div>
+                   </div>
+               </div>
+           </div>
+           
+           <div class="contact-section fade-in">
+               <h2 class="contact-title">Hagamos Realidad Su Sueño</h2>
+               <p class="contact-subtitle">
+                   Estamos listos para crear el matrimonio perfecto que siempre han imaginado
+               </p>
+               
+               <div class="contact-grid">
+                   <div class="contact-item">
+                       <div class="contact-item-icon">📱</div>
+                       <div class="contact-item-title">WhatsApp</div>
+                       <div class="contact-item-info">+57 (301) 456-7890</div>
+                   </div>
+                   
+                   <div class="contact-item">
+                       <div class="contact-item-icon">📧</div>
+                       <div class="contact-item-title">Email</div>
+                       <div class="contact-item-info">eventos@selectaeventos.com</div>
+                   </div>
+                   
+                   <div class="contact-item">
+                       <div class="contact-item-icon">📍</div>
+                       <div class="contact-item-title">Oficina</div>
+                       <div class="contact-item-info">Calle 10A #41-18</div>
+                   </div>
+               </div>
+               
+               <div class="schedule-box">
+                   <div class="schedule-title">
+                       <span>🕐</span>
+                       Horarios de Atención
+                   </div>
+                   <div>
+                       <strong>Lunes a Viernes:</strong> 8:00 AM - 6:00 PM<br>
+                       <strong>Sábados:</strong> 9:00 AM - 4:00 PM<br>
+                       <strong>Domingos:</strong> Disponible para eventos programados
+                   </div>
+               </div>
+           </div>
+           
+           <div class="final-message fade-in">
+               <div class="final-tag">
+                   <span>💕</span>
+                   Con amor, Selecta Eventos
+                   <span>💕</span>
+               </div>
+               <p class="final-quote">
+                   "Cada matrimonio es una historia única, y nosotros somos los narradores de su cuento de hadas"
+               </p>
+               <p class="final-text">
+                   Esperamos ser parte de este momento tan especial en sus vidas. Nuestro compromiso es superar todas sus expectativas y crear recuerdos que durarán para siempre.
+               </p>
+           </div>
+       </div>
+   </div>
+   
+   <script>
+       // Intersection Observer para animaciones al scroll
+       const observerOptions = {
+           threshold: 0.1,
+           rootMargin: '0px 0px -50px 0px'
+       };
+       
+       const observer = new IntersectionObserver((entries) => {
+           entries.forEach(entry => {
+               if (entry.isIntersecting) {
+                   entry.target.style.animationDelay = '0s';
+                   entry.target.style.animationFillMode = 'both';
+               }
+           });
+       }, observerOptions);
+       
+       // Observar elementos con clases de animación
+       document.addEventListener('DOMContentLoaded', function() {
+           const animatedElements = document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right, .scale-in');
+           
+           animatedElements.forEach((element, index) => {
+               element.style.animationDelay = `${index * 0.1}s`;
+               observer.observe(element);
+           });
+           
+           // Mejorar la experiencia de hover en dispositivos táctiles
+           const interactiveElements = document.querySelectorAll('.service-card, .package-card, .contact-item, .stat-card');
+           
+           interactiveElements.forEach(element => {
+               // Agregar efecto de ripple en touch
+               element.addEventListener('touchstart', function(e) {
+                   const ripple = document.createElement('span');
+                   const rect = this.getBoundingClientRect();
+                   const size = Math.max(rect.width, rect.height);
+                   const x = e.touches[0].clientX - rect.left - size / 2;
+                   const y = e.touches[0].clientY - rect.top - size / 2;
+                   
+                   ripple.style.width = ripple.style.height = size + 'px';
+                   ripple.style.left = x + 'px';
+                   ripple.style.top = y + 'px';
+                   ripple.style.position = 'absolute';
+                   ripple.style.borderRadius = '50%';
+                   ripple.style.background = 'rgba(139, 195, 74, 0.3)';
+                   ripple.style.pointerEvents = 'none';
+                   ripple.style.animation = 'ripple 0.6s ease-out';
+                   
+                   this.style.position = 'relative';
+                   this.style.overflow = 'hidden';
+                   this.appendChild(ripple);
+                   
+                   setTimeout(() => {
+                       if (ripple.parentNode) {
+                           ripple.parentNode.removeChild(ripple);
+                       }
+                   }, 600);
+               });
+           });
+           
+           // Smooth scroll para navegación interna
+           document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+               anchor.addEventListener('click', function (e) {
+                   e.preventDefault();
+                   const target = document.querySelector(this.getAttribute('href'));
+                   if (target) {
+                       target.scrollIntoView({
+                           behavior: 'smooth',
+                           block: 'start'
+                       });
+                   }
+               });
+           });
+           
+           // Lazy loading para imágenes si las hay
+           const images = document.querySelectorAll('img[data-src]');
+           const imageObserver = new IntersectionObserver((entries, observer) => {
+               entries.forEach(entry => {
+                   if (entry.isIntersecting) {
+                       const img = entry.target;
+                       img.src = img.dataset.src;
+                       img.classList.remove('lazy');
+                       imageObserver.unobserve(img);
+                   }
+               });
+           });
+           
+           images.forEach(img => imageObserver.observe(img));
+       });
+       
+       // Agregar estilos de animación para ripple con colores de marca
+       const style = document.createElement('style');
+       style.textContent = `
+           @keyframes ripple {
+               from {
+                   transform: scale(0);
+                   opacity: 1;
+               }
+               to {
+                   transform: scale(2);
+                   opacity: 0;
+               }
+           }
+       `;
+       document.head.appendChild(style);
+       
+       // Optimización de rendimiento: debounce para eventos de scroll
+       function debounce(func, wait) {
+           let timeout;
+           return function executedFunction(...args) {
+               const later = () => {
+                   clearTimeout(timeout);
+                   func(...args);
+               };
+               clearTimeout(timeout);
+               timeout = setTimeout(later, wait);
+           };
+       }
+       
+       // Parallax suave para el header
+       const header = document.querySelector('.event-header');
+       const handleScroll = debounce(() => {
+           const scrolled = window.pageYOffset;
+           const rate = scrolled * -0.3;
+           if (header) {header.style.transform = `translateY(${rate}px)`;
+           }
+       }, 10);
+       
+       window.addEventListener('scroll', handleScroll);
+       
+       // Mejorar accesibilidad
+       document.addEventListener('keydown', function(e) {
+           if (e.key === 'Tab') {
+               document.body.classList.add('keyboard-navigation');
+           }
+       });
+       
+       document.addEventListener('mousedown', function() {
+           document.body.classList.remove('keyboard-navigation');
+       });
+       
+       // Efecto de brillo en elementos importantes
+       function addShimmerEffect() {
+           const shimmerElements = document.querySelectorAll('.service-card, .package-card.featured');
+           
+           shimmerElements.forEach((element, index) => {
+               setTimeout(() => {
+                   element.style.position = 'relative';
+                   element.style.overflow = 'hidden';
+                   
+                   const shimmer = document.createElement('div');
+                   shimmer.style.position = 'absolute';
+                   shimmer.style.top = '0';
+                   shimmer.style.left = '-100%';
+                   shimmer.style.width = '100%';
+                   shimmer.style.height = '100%';
+                   shimmer.style.background = 'linear-gradient(90deg, transparent, rgba(139, 195, 74, 0.4), transparent)';
+                   shimmer.style.animation = 'shimmer 2s ease-in-out';
+                   shimmer.style.pointerEvents = 'none';
+                   
+                   element.appendChild(shimmer);
+                   
+                   setTimeout(() => {
+                       if (shimmer.parentNode) {
+                           shimmer.remove();
+                       }
+                   }, 2000);
+               }, index * 500);
+           });
+       }
+       
+       // Agregar keyframes para shimmer
+       const shimmerStyle = document.createElement('style');
+       shimmerStyle.textContent = `
+           @keyframes shimmer {
+               0% { left: -100%; }
+               100% { left: 100%; }
+           }
+       `;
+       document.head.appendChild(shimmerStyle);
+       
+       // Ejecutar shimmer después de que se cargue la página
+       setTimeout(addShimmerEffect, 2000);
+       
+       // Efecto de typing para el título principal
+       function typeWriter(element, text, speed = 100) {
+           let i = 0;
+           element.innerHTML = '';
+           
+           function type() {
+               if (i < text.length) {
+                   element.innerHTML += text.charAt(i);
+                   i++;
+                   setTimeout(type, speed);
+               }
+           }
+           
+           type();
+       }
+       
+       // Aplicar efecto typing al título del evento si está visible
+       const eventTitle = document.querySelector('.event-title');
+       if (eventTitle) {
+           const originalText = eventTitle.textContent;
+           const titleObserver = new IntersectionObserver((entries) => {
+               entries.forEach(entry => {
+                   if (entry.isIntersecting) {
+                       setTimeout(() => {
+                           typeWriter(eventTitle, originalText, 80);
+                       }, 500);
+                       titleObserver.unobserve(entry.target);
+                   }
+               });
+           });
+           
+           titleObserver.observe(eventTitle);
+       }
+       
+       // Contador animado para estadísticas
+       function animateCounter(element, finalValue, duration = 2000) {
+           const startValue = 0;
+           const increment = finalValue / (duration / 16);
+           let currentValue = startValue;
+           
+           const timer = setInterval(() => {
+               currentValue += increment;
+               if (currentValue >= finalValue) {
+                   element.textContent = finalValue + (element.textContent.includes('+') ? '+' : '') + 
+                                       (element.textContent.includes('%') ? '%' : '');
+                   clearInterval(timer);
+               } else {
+                   element.textContent = Math.floor(currentValue) + (element.textContent.includes('+') ? '+' : '') + 
+                                       (element.textContent.includes('%') ? '%' : '');
+               }
+           }, 16);
+       }
+       
+       // Aplicar animación de contador a estadísticas
+       const statNumbers = document.querySelectorAll('.stat-number');
+       const statsObserver = new IntersectionObserver((entries) => {
+           entries.forEach(entry => {
+               if (entry.isIntersecting) {
+                   const element = entry.target;
+                   const text = element.textContent;
+                   const number = parseInt(text.replace(/\D/g, ''));
+                   
+                   if (!isNaN(number) && number > 0) {
+                       animateCounter(element, number);
+                   }
+                   
+                   statsObserver.unobserve(element);
+               }
+           });
+       });
+       
+       statNumbers.forEach(stat => statsObserver.observe(stat));
+       
+       // Efecto de particles en el fondo del header
+       function createParticles() {
+           const header = document.querySelector('.event-header');
+           if (!header) return;
+           
+           for (let i = 0; i < 20; i++) {
+               const particle = document.createElement('div');
+               particle.style.position = 'absolute';
+               particle.style.width = Math.random() * 4 + 2 + 'px';
+               particle.style.height = particle.style.width;
+               particle.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+               particle.style.borderRadius = '50%';
+               particle.style.left = Math.random() * 100 + '%';
+               particle.style.top = Math.random() * 100 + '%';
+               particle.style.pointerEvents = 'none';
+               particle.style.animation = `float-particle ${Math.random() * 3 + 2}s ease-in-out infinite`;
+               particle.style.animationDelay = Math.random() * 2 + 's';
+               
+               header.appendChild(particle);
+           }
+       }
+       
+       // Agregar keyframes para partículas
+       const particleStyle = document.createElement('style');
+       particleStyle.textContent = `
+           @keyframes float-particle {
+               0%, 100% { 
+                   transform: translateY(0px) translateX(0px); 
+                   opacity: 0.3;
+               }
+               50% { 
+                   transform: translateY(-20px) translateX(10px); 
+                   opacity: 0.8;
+               }
+           }
+       `;
+       document.head.appendChild(particleStyle);
+       
+       // Crear partículas después de cargar
+       setTimeout(createParticles, 1000);
+       
+       // Efecto de hover mejorado para la tabla de precios
+       const tableRows = document.querySelectorAll('.pricing-table tbody tr:not(.total-row)');
+       tableRows.forEach(row => {
+           row.addEventListener('mouseenter', function() {
+               this.style.background = 'linear-gradient(135deg, rgba(139, 195, 74, 0.1), rgba(76, 175, 80, 0.1))';
+               this.style.transform = 'scale(1.02)';
+               this.style.boxShadow = '0 4px 12px rgba(139, 195, 74, 0.2)';
+           });
+           
+           row.addEventListener('mouseleave', function() {
+               this.style.background = '';
+               this.style.transform = '';
+               this.style.boxShadow = '';
+           });
+       });
+       
+       // Validación de formulario si hay campos
+       const forms = document.querySelectorAll('form');
+       forms.forEach(form => {
+           form.addEventListener('submit', function(e) {
+               const inputs = form.querySelectorAll('input[required], textarea[required]');
+               let isValid = true;
+               
+               inputs.forEach(input => {
+                   if (!input.value.trim()) {
+                       isValid = false;
+                       input.style.borderColor = '#e53e3e';
+                       input.style.boxShadow = '0 0 0 1px #e53e3e';
+                   } else {
+                       input.style.borderColor = 'var(--primary-green)';
+                       input.style.boxShadow = '0 0 0 1px var(--primary-green)';
+                   }
+               });
+               
+               if (!isValid) {
+                   e.preventDefault();
+                   alert('Por favor, completa todos los campos requeridos.');
+               }
+           });
+       });
+       
+       // Mejorar la experiencia de scroll en móviles
+       let isScrolling = false;
+       
+       window.addEventListener('scroll', () => {
+           if (!isScrolling) {
+               window.requestAnimationFrame(() => {
+                   // Efecto parallax para elementos de fondo
+                   const scrolled = window.pageYOffset;
+                   const parallaxElements = document.querySelectorAll('.section');
+                   
+                   parallaxElements.forEach((element, index) => {
+                       const speed = 0.5 + (index * 0.1);
+                       element.style.transform = `translateY(${scrolled * speed * 0.1}px)`;
+                   });
+                   
+                   isScrolling = false;
+               });
+           }
+           isScrolling = true;
+       });
+       
+       // Mostrar/ocultar elementos basado en scroll
+       let lastScrollTop = 0;
+       const navbar = document.querySelector('.header');
+       
+       window.addEventListener('scroll', () => {
+           const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+           
+           if (scrollTop > lastScrollTop && scrollTop > 100) {
+               // Scrolling down
+               if (navbar) {
+                   navbar.style.transform = 'translateY(-100%)';
+                   navbar.style.transition = 'transform 0.3s ease';
+               }
+           } else {
+               // Scrolling up
+               if (navbar) {
+                   navbar.style.transform = 'translateY(0)';
+               }
+           }
+           
+           lastScrollTop = scrollTop;
+       });
+       
+       // Efecto de loading mejorado
+       window.addEventListener('load', () => {
+           document.body.style.opacity = '0';
+           document.body.style.transition = 'opacity 0.5s ease';
+           
+           setTimeout(() => {
+               document.body.style.opacity = '1';
+           }, 100);
+       });
+       
+       // Optimización para dispositivos de bajo rendimiento
+       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+       
+       if (prefersReducedMotion.matches) {
+           // Deshabilitar animaciones complejas
+           const style = document.createElement('style');
+           style.textContent = `
+               *, *::before, *::after {
+                   animation-duration: 0.01ms !important;
+                   animation-iteration-count: 1 !important;
+                   transition-duration: 0.01ms !important;
+               }
+           `;
+           document.head.appendChild(style);
+       }
+       
+       // Detección de dispositivo táctil
+       const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+       
+       if (isTouchDevice) {
+           document.body.classList.add('touch-device');
+           
+           // Mejorar experiencia táctil
+           const touchableElements = document.querySelectorAll('.service-card, .package-card, .contact-item');
+           
+           touchableElements.forEach(element => {
+               element.style.cursor = 'pointer';
+               element.addEventListener('touchstart', function() {
+                   this.style.transform = 'scale(0.98)';
+               });
+               
+               element.addEventListener('touchend', function() {
+                   this.style.transform = '';
+               });
+           });
+       }
+   </script>
+</body>
+</html>
